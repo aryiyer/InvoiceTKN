@@ -32,21 +32,28 @@ export default function marketPlace() {
             
         );        
     }
-
-    return (
-        <main>
-            <div className={"flex flex-row align-center justify-evenly mt-7"}>
-                <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-full"}onClick={() => handleClick("/list-token/")}>
-                    List Token
-                </button>
-                <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-full"} onClick={() => handleClick("/delist-token/")}>
-                    Delist Token
-                </button>
-            </div>
+    if (!(currentAccountInfo?.accountType == "minter" || currentAccountInfo?.accountType == "investor" || currentAccountInfo?.accountType == "owner")) {
+        return (<main>
             <div className = {"flex flex-col mt-7"}>
                 <ListingCard/>
             </div>
-        </main>
-        
-    )
+        </main>);        
+    } else {
+        return (
+            <main>
+                <div className={"flex flex-row align-center justify-evenly mt-7"}>
+                    <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-full"}onClick={() => handleClick("/list-token/")}>
+                        List Token
+                    </button>
+                    <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-full"} onClick={() => handleClick("/delist-token/")}>
+                        Delist Token
+                    </button>
+                </div>
+                <div className = {"flex flex-col mt-7"}>
+                    <ListingCard/>
+                </div>
+            </main>
+            
+        )
+    }
 }

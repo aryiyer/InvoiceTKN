@@ -2,8 +2,8 @@
 
 import {useState, useEffect} from 'react';
 import { AccountInfo, useAccountStore } from '../store/accountStore';
-import { getMMAccounts, getTokensOwned, getTokensNotListed, checkConnection } from '../blockchain/search';
-import {listCoin} from '../blockchain/write';
+import { getMMAccounts, getTokensOwned2, getTokensNotListed2, checkConnection } from '../blockchain/search';
+import {listCoin2} from '../blockchain/write';
 import {useRouter} from "next/navigation";
 
 export default function (){
@@ -15,14 +15,17 @@ export default function (){
     const setAccountInfo = useAccountStore((state) => state.setAccountInfo);
 
     async function tokensOwned(address: string) {
-        const owned: Number[] = await getTokensOwned(address);
-        const listed: Number[] = await getTokensNotListed(owned);
+        const owned: Number[] = await getTokensOwned2(address);
+        const listed: Number[] = await getTokensNotListed2(owned);
+        for (let i = 0; i < owned.length; i++){
+            console.log(owned[i]);
+        }
         setOwnedData(listed);
     };    
 
     async function listButtonClick(formData: FormData){
         //await listForm(formData);
-        const listRes = await listCoin(Number(formData.get("tokenId")));
+        const listRes = await listCoin2(Number(formData.get("tokenId")), Number(formData.get("value")));
         setSuccess(listRes);
         
         await sleep(3000);
@@ -61,6 +64,20 @@ export default function (){
             </div>
             
         );
+    } else if (!(currentAccountInfo?.accountType == "minter" || currentAccountInfo?.accountType == "investor" || currentAccountInfo?.accountType == "owner")) {
+        return(
+            <div className={"flex flex-col max-w-full mt-20 ml-15 gap-4 items-center"}>
+                <div className={"text-xl font-bold"}>
+                    Only approved roles can list tokens.
+                </div>
+                <div>
+                    <ul className={"flex flex-row mt-7"}>
+                        <li className={"text-xl font-bold"}>Your Public Address: &nbsp;</li>
+                        <li className={"text-xl text-gray-700"}>{currentAccountInfo?.accountAddress}</li>
+                    </ul>           
+                </div>
+            </div>            
+        );
     } else {
         return(
             <div>
@@ -84,7 +101,7 @@ export default function (){
 
                     <div className={"mt-7"}>   
                         <label htmlFor="value">Value of Listing:   </label>
-                        <input type="text" id="value" name="value" className={"border-1 border-solid border-black rounded-sm"}></input>
+                        <input type="number" id="value" name="value" className={"border-1 border-solid border-black rounded-sm"}></input>
                     </div>
 
                     <div className={"mt-7"}>

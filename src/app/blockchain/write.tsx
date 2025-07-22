@@ -1,5 +1,5 @@
 const { Web3 } = require('web3');
-import {TokenData} from "../store/dataStore";
+//import { nft_abi, nftAddress, marketplace_abi, marketplaceAddress } from "./info";
 
 import {MetaMaskSDK} from "@metamask/sdk";
 
@@ -11,14 +11,89 @@ const MMSDK = new MetaMaskSDK({
   infuraAPIKey: process.env.SEPOLIA_API,
 });
 
+declare var window: any
 const web3MM = new Web3(window.ethereum);
-//const web3api = new Web3(process.env.NEXT_PUBLIC_SEPOLIA_API);
 
-const abi = [
+const nft_abi = [
 	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "ERC721EnumerableForbiddenBatchMint",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "ERC721IncorrectOwner",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "ERC721InsufficientApproval",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "approver",
+				"type": "address"
+			}
+		],
+		"name": "ERC721InvalidApprover",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "ERC721InvalidOperator",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "ERC721InvalidOwner",
+		"type": "error"
 	},
 	{
 		"inputs": [
@@ -32,22 +107,60 @@ const abi = [
 		"type": "error"
 	},
 	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			}
+		],
+		"name": "ERC721InvalidSender",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "ERC721NonexistentToken",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
 				"name": "owner",
 				"type": "address"
 			},
 			{
-				"indexed": false,
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "ERC721OutOfBoundsIndex",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
 				"internalType": "address",
 				"name": "approved",
 				"type": "address"
 			},
 			{
-				"indexed": false,
+				"indexed": true,
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
@@ -60,13 +173,13 @@ const abi = [
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
+				"indexed": true,
 				"internalType": "address",
 				"name": "owner",
 				"type": "address"
 			},
 			{
-				"indexed": false,
+				"indexed": true,
 				"internalType": "address",
 				"name": "operator",
 				"type": "address"
@@ -79,6 +192,31 @@ const abi = [
 			}
 		],
 		"name": "ApprovalForAll",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "from",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "Transfer",
 		"type": "event"
 	},
 	{
@@ -102,12 +240,36 @@ const abi = [
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
 				"internalType": "uint256",
-				"name": "tokenId",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "delistCoin",
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "role",
+				"type": "string"
+			}
+		],
+		"name": "changeRole",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -120,16 +282,191 @@ const abi = [
 				"type": "uint256"
 			}
 		],
-		"name": "listCoin",
-		"outputs": [],
-		"stateMutability": "nonpayable",
+		"name": "contains",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "getApproved",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addy",
+				"type": "address"
+			}
+		],
+		"name": "getMintedTokens",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "getMinter",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getOwner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addy",
+				"type": "address"
+			}
+		],
+		"name": "getRole",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "getTokenInfo",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "yield",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "valid",
+						"type": "bool"
+					},
+					{
+						"internalType": "address",
+						"name": "minter",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "maturityDate",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct InvoiceTKN2.tokenData",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "operator",
+				"type": "address"
+			}
+		],
+		"name": "isApprovedForAll",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
 		"inputs": [
 			{
 				"internalType": "string",
-				"name": "strInfo",
+				"name": "_name",
 				"type": "string"
 			},
 			{
@@ -139,7 +476,7 @@ const abi = [
 			},
 			{
 				"internalType": "address",
-				"name": "to",
+				"name": "_to",
 				"type": "address"
 			},
 			{
@@ -158,7 +495,70 @@ const abi = [
 				"type": "uint256"
 			}
 		],
-		"name": "mintCoin",
+		"name": "mintToken",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newUser",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "role",
+				"type": "string"
+			}
+		],
+		"name": "onboardUser",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "ownerOf",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			}
+		],
+		"name": "removeUser",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -223,7 +623,7 @@ const abi = [
 			},
 			{
 				"internalType": "bool",
-				"name": "_approved",
+				"name": "approved",
 				"type": "bool"
 			}
 		],
@@ -235,40 +635,127 @@ const abi = [
 	{
 		"inputs": [
 			{
+				"internalType": "bool",
+				"name": "v",
+				"type": "bool"
+			},
+			{
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
 			}
 		],
-		"name": "settleCoin",
+		"name": "setValidity",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
+				"internalType": "bytes4",
+				"name": "interfaceId",
+				"type": "bytes4"
+			}
+		],
+		"name": "supportsInterface",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "symbol",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "tokenByIndex",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "address",
-				"name": "from",
+				"name": "owner",
 				"type": "address"
 			},
 			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "to",
-				"type": "address"
-			},
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "tokenOfOwnerByIndex",
+		"outputs": [
 			{
-				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "uint256",
 				"name": "tokenId",
 				"type": "uint256"
 			}
 		],
-		"name": "Transfer",
-		"type": "event"
+		"name": "tokenURI",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalSupply",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -292,99 +779,59 @@ const abi = [
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	}
+];
+const nftAddress = "0x1c1110f49ae6693c8279285c62e374963b664e84";
+const marketplace_abi = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
 	},
 	{
 		"inputs": [
 			{
+				"internalType": "contract IERC721",
+				"name": "nftAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
 				"internalType": "address",
-				"name": "user",
+				"name": "_to",
 				"type": "address"
 			}
 		],
-		"name": "balanceOf",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
+		"name": "buyItem",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [
 			{
+				"internalType": "contract IERC721",
+				"name": "nftAddress",
+				"type": "address"
+			},
+			{
 				"internalType": "uint256",
-				"name": "tokenId",
+				"name": "_tokenId",
 				"type": "uint256"
 			}
 		],
-		"name": "contains",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
+		"name": "delistItem",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "currentTokenId",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "getApproved",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getListedTokens",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "addy",
-				"type": "address"
-			}
-		],
-		"name": "getMintedTokens",
+		"name": "getListedItems",
 		"outputs": [
 			{
 				"internalType": "uint256[]",
@@ -399,88 +846,11 @@ const abi = [
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "tokenId",
+				"name": "_tokenId",
 				"type": "uint256"
 			}
 		],
-		"name": "getMinter",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "acc",
-				"type": "address"
-			}
-		],
-		"name": "getOwning",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getSenderAddress",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getSupply",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getTimeStamp",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "getTokenInfo",
+		"name": "getListingInfo",
 		"outputs": [
 			{
 				"components": [
@@ -490,29 +860,9 @@ const abi = [
 						"type": "uint256"
 					},
 					{
-						"internalType": "string",
-						"name": "info",
-						"type": "string"
-					},
-					{
 						"internalType": "uint256",
-						"name": "value",
+						"name": "price",
 						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "yield",
-						"type": "uint256"
-					},
-					{
-						"internalType": "address[]",
-						"name": "ownerHistory",
-						"type": "address[]"
-					},
-					{
-						"internalType": "bool",
-						"name": "valid",
-						"type": "bool"
 					},
 					{
 						"internalType": "bool",
@@ -521,21 +871,11 @@ const abi = [
 					},
 					{
 						"internalType": "address",
-						"name": "minter",
+						"name": "seller",
 						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "approved",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "maturityDate",
-						"type": "uint256"
 					}
 				],
-				"internalType": "struct InvoiceTKN.tokenData",
+				"internalType": "struct ITKNMarketplace.Listing",
 				"name": "",
 				"type": "tuple"
 			}
@@ -546,22 +886,17 @@ const abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "ownerAcc",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "operator",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
 			}
 		],
-		"name": "isApprovedForAll",
+		"name": "getListingPrice",
 		"outputs": [
 			{
-				"internalType": "bool",
+				"internalType": "uint256",
 				"name": "",
-				"type": "bool"
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -571,7 +906,7 @@ const abi = [
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "tokenId",
+				"name": "_tokenId",
 				"type": "uint256"
 			}
 		],
@@ -589,73 +924,116 @@ const abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "isValid",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "ownerOf",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
+				"internalType": "contract IERC721",
+				"name": "nftAddress",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
+				"type": "uint256"
 			}
 		],
-		"stateMutability": "view",
+		"name": "listItem",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [
 			{
-				"internalType": "uint256",
-				"name": "tokenId",
-				"type": "uint256"
-			}
-		],
-		"name": "secondsUntilMaturity",
-		"outputs": [
+				"internalType": "contract IERC721",
+				"name": "nftAddress",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "_tokenId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_price",
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "view",
+		"name": "updateListing",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ];
+const marketplaceAddress = "0xe942162eb3c53e1a510a59b9cf24d10dde00d3a0";
 
-const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+const nftContract = new web3MM.eth.Contract(nft_abi, nftAddress);
+const marketplaceContract = new web3MM.eth.Contract(marketplace_abi, marketplaceAddress);
 
-const contract = new web3MM.eth.Contract(abi, contractAddress);
-//const contract = new web3api.eth.Contract(abi, contractAddress);
+/* NFT CONTRACT WRITE FUNCTIONS */
 
+export async function mintTkn(name :string, minter: string, to : string, daysAfter: number, value : number, _yield : number) {
+	console.log("Web3: Calling mintTkn.");
+	try {
+		await nftContract.methods.mintToken(name, minter, to, daysAfter, value, _yield).send({
+			from: minter,
+		});
+		console.log("Minted token.");
+	} catch (error) {
+		console.error(error);
+	}
+}
 
-export async function listCoin(tokenId: number){
+export async function addUser(address: string, role: string, fromAddy: any) {
+	console.log("Web3: Calling addUser.");
+	try {
+		await nftContract.methods.onboardUser(address, role).send({
+			from: fromAddy,
+		});
+		
+		console.log("Added user.");
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+export async function changeUserRole(address: string, role: string, fromAddy: any) {
+	console.log("Web3: Calling changeUserRole.");
+	try {
+		await nftContract.methods.changeRole(address, role).send({
+			from: fromAddy,
+		});
+		console.log("Changed user role.");
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+export async function deleteUser(address: string, fromAddy : any) {
+	console.log("Web3: Calling deleteUser.");
+	try {
+		await nftContract.methods.removeUser(address).send({
+			from: fromAddy,
+		});
+		console.log("Deleted user.");
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+/* MARKETPLACE WRITE FUNCTIONS */
+
+export async function listCoin2(tokenId: number, price: number){
     const accounts = await web3MM.eth.requestAccounts();
-    console.log("Web3: Calling listCoin");
+    console.log("Web3: Calling listCoin2");
     try {
-        await contract.methods.listCoin(tokenId).send({
+		await nftContract.methods.approve(marketplaceAddress, tokenId).send({
+			from: accounts[0],
+		});
+        await marketplaceContract.methods.listItem(nftAddress, tokenId, price).send({
             from: accounts[0],
         });
         return true;
@@ -665,11 +1043,11 @@ export async function listCoin(tokenId: number){
     }
 }
 
-export async function delistCoin(tokenId: number){
+export async function delistCoin2(tokenId: number){
     const accounts = await web3MM.eth.requestAccounts();
-    console.log("Web3: Calling listCoin");
+    console.log("Web3: Calling delistCoin2");
     try {
-        await contract.methods.delistCoin(tokenId).send({
+        await marketplaceContract.methods.delistItem(nftAddress, tokenId).send({
             from: accounts[0],
         });
         console.log("delisted");
@@ -683,31 +1061,31 @@ export async function delistCoin(tokenId: number){
 //person purchasing should contain info on their address
 
 //for now, purchase is free.
-export async function purchaseCoinTemp(tokenId: number){
-    console.log("Web3: Calling purchaseCoinTemp");
-    const accounts = await web3MM.eth.requestAccounts();
-    var ownerAccount;
+// export async function purchaseCoinTemp(tokenId: number){
+//     console.log("Web3: Calling purchaseCoinTemp");
+//     const accounts = await web3MM.eth.requestAccounts();
+//     var ownerAccount;
 
-    //get owner of token being purchased
-    try {
-        ownerAccount = await contract.methods.ownerOf(tokenId).call();
-        console.log("Token owner: " + ownerAccount);
-        //check that purchaser has sufficient balance
-        var balance = await web3MM.eth.getBalance(accounts[0]);
-        balance = Number(balance)/1000000000000000000;
-        console.log(accounts[0] + "balance: "+ balance);
-        /*if (balance >= price)
-            try {
-                transfer amount
-                deListToken(tokenId)
-                tranferToken(from, to, etc.);
-            } catch {error}
-        */
+//     //get owner of token being purchased
+//     try {
+//         ownerAccount = await contract.methods.ownerOf(tokenId).call();
+//         console.log("Token owner: " + ownerAccount);
+//         //check that purchaser has sufficient balance
+//         var balance = await web3MM.eth.getBalance(accounts[0]);
+//         balance = Number(balance)/1000000000000000000;
+//         console.log(accounts[0] + "balance: "+ balance);
+//         /*if (balance >= price)
+//             try {
+//                 transfer amount
+//                 deListToken(tokenId)
+//                 tranferToken(from, to, etc.);
+//             } catch {error}
+//         */
 
-    } catch (error) {
-        console.log("Error getting ownerOf token.");
-        console.error(error);
-    }
+//     } catch (error) {
+//         console.log("Error getting ownerOf token.");
+//         console.error(error);
+//     }
     
-}
+// }
 

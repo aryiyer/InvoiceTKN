@@ -1,17 +1,14 @@
 import {create} from 'zustand';
 
-export type TokenData = {
+export type TokenData2 = {
     tokenId: number,
-    info: string,
+    name: string,
     value: number,
     yield: number,
-    ownerHistory: string[],
     valid: boolean,
-    listed: boolean,
     minter: string,
-    approved: string,
-    maturityDate: number,
-};
+    maturityDate: number,    
+}
 
 export type AccountInfo = {
     accountAddress: string,
@@ -20,8 +17,8 @@ export type AccountInfo = {
 
 //blueprint for the store type we want to create
 type Store = {
-    selectedToken: TokenData | null; //store will have a variable selectedToken of type TokenData or null
-    setSelectedToken: (token: TokenData) => void; //store will have a function setSelectedToken which will take a TokenData as a prop;
+    selectedToken: TokenData2 | null; //store will have a variable selectedToken of type TokenData or null
+    setSelectedToken: (token: TokenData2) => void; //store will have a function setSelectedToken which will take a TokenData as a prop;
 
     currentAccountInfo: AccountInfo | null;
     setAccountInfo: (info: AccountInfo) => void;

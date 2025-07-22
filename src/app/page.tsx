@@ -20,18 +20,10 @@ export default function Home() {
             </button>
         </div>
       );
-  } else if (currentAccountInfo.accountType == "minter"){
+  } else {
     return(
       <div>
-        <p>Minter view!!</p>
-        <p>Account Address: {currentAccountInfo.accountAddress}</p>
-        <p>Account Type: {currentAccountInfo.accountType}</p>
-      </div>
-    )
-  } else if (currentAccountInfo.accountType == "investor"){
-    return(
-      <div>
-        <p>Investor view!!</p>
+        <p>{currentAccountInfo.accountType} view!!</p>
         <p>Account Address: {currentAccountInfo.accountAddress}</p>
         <p>Account Type: {currentAccountInfo.accountType}</p>
       </div>

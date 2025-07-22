@@ -3,8 +3,8 @@
 import {useState, useEffect} from 'react';
 import {usePathname, useRouter} from 'next/navigation';
 import {useTokenStore} from "../../store/dataStore";
-import {TokenData} from "../../store/dataStore";
-import {getTokInfo} from "../../blockchain/search";
+import {TokenData2} from "../../store/dataStore";
+import {getTokInfo2, isListed2} from "../../blockchain/search";
 
 const options = {
   weekday: "long",
@@ -13,20 +13,22 @@ const options = {
   day: "numeric",
   hour: "numeric",
   minute: "numeric",
-  fractionalSecondDigits: "2",
-};
+  fractionalSecondDigits: 2,
+} as const;
 
 export default function DynamicRoute(props: any){
     const [loading, setLoading] = useState(true);
     const [haveError, setError] = useState(false);
-    const [token, setToken] = useState<TokenData | null>(null);
+    const [listed, setListed] = useState();
+    const [token, setToken] = useState<TokenData2 | null>(null);
 
+    const storedToken = useTokenStore((state) => state.selectedToken);
     const setSelectedToken = useTokenStore((state) => state.setSelectedToken);
     const rout = useRouter();
     
     const pathname = usePathname(); // /token/{id}/
     const tokenId = Number(pathname.substring(7));
-    const storedToken = useTokenStore((state) => state.selectedToken);
+    
     var date = new Date(0);
 
     function handleClick(url: string, token: any) {
@@ -40,7 +42,8 @@ export default function DynamicRoute(props: any){
             if (!storedToken) {
                 console.log("no token found in state, reading from blockchain");
                 try {
-                    const t : (TokenData | null) = await getTokInfo(tokenId);
+                    setListed(await isListed2(tokenId));
+                    const t : (TokenData2 | null) = await getTokInfo2(tokenId);
                     if (t == null){
                         console.log("Error in getTokenInfo");
                         setLoading(false);
@@ -54,8 +57,9 @@ export default function DynamicRoute(props: any){
                     console.error(error);
                 }
             } else {
-                console.log("token found in state.")
-                setToken(storedToken);
+                console.log("token found in state.");
+                console.log(storedToken.name);
+                await setToken(storedToken);
                 setLoading(false);
             }
         }
@@ -74,29 +78,29 @@ export default function DynamicRoute(props: any){
         );
     }
 
-    if (token?.listed){
+    if (listed){
         return (
         <div>
             <ul className={"flex flex-row items-center justify-evenly"}>
                 <li>
                     <div className={"mt-30"}>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
-                            <li className={"text-3xl"}>{token.info}</li>
-                            <li className={"text-xl text-gray-500"}>id: #{token.tokenId}</li>
+                            <li className={"text-3xl"}>{token?.name}</li>
+                            <li className={"text-xl text-gray-500"}>id: #{token?.tokenId}</li>
                         </ul>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
-                            <li className={"text-3xl"}>${token.value}</li>
-                            <li className={"text-xl text-gray-500"}>{(token.yield)/10}%</li>
+                            <li className={"text-3xl"}>${token?.value}</li>
+                            <li className={"text-xl text-gray-500"}>{Number(token?.yield)/100}%</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Minted by: </li>
-                            <li className={"text-xl text-gray-700"}>{token.minter}</li>
+                            <li className={"text-xl text-gray-700"}>{token?.minter}</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Maturity Date: </li>
-                            <li className={"text-xl text-gray-700"}>{(new Date(token.maturityDate*1000)).toLocaleDateString(undefined, options)}</li>
+                            <li className={"text-xl text-gray-700"}>{(new Date(Number(token?.maturityDate)*1000)).toLocaleDateString(undefined, options)}</li>
                         </ul>
                     </div>
                 </li>
@@ -117,12 +121,12 @@ export default function DynamicRoute(props: any){
                 <li>
                     <div className={"mt-30"}>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
-                            <li className={"text-3xl"}>{token.info}</li>
-                            <li className={"text-xl text-gray-500"}>id: #{token.tokenId}</li>
+                            <li className={"text-3xl"}>{token?.name}</li>
+                            <li className={"text-xl text-gray-500"}>id: #{token?.tokenId}</li>
                         </ul>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-3xl"}>${token?.value}</li>
-                            <li className={"text-xl text-gray-500"}>{token.yield/10}%</li>
+                            <li className={"text-xl text-gray-500"}>{Number(token?.yield)/100}%</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
@@ -132,7 +136,7 @@ export default function DynamicRoute(props: any){
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Maturity Date: </li>
-                            <li className={"text-xl text-gray-700"}>{(new Date(token.maturityDate*1000)).toLocaleDateString(undefined, options)}</li>
+                            <li className={"text-xl text-gray-700"}>{(new Date(Number(token?.maturityDate)*1000)).toLocaleDateString(undefined, options)}</li>
                         </ul>
                     </div>
                 </li>
