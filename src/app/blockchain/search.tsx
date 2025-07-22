@@ -3,7 +3,7 @@ import {TokenData2} from "../store/dataStore";
 const web3 = new Web3(process.env.NEXT_PUBLIC_SEPOLIA_API);
 //const web3 = new Web3("https://sepolia.infura.io/v3/282bf43ad4b242228606d1202043127b");
 import {MetaMaskSDK} from "@metamask/sdk";
-import { AccountInfo } from "../store/dataStore";
+import { AccountInfo } from "../store/accountStore";
 
 const MMSDK = new MetaMaskSDK({
   dappMetadata: {

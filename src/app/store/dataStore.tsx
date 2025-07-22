@@ -10,19 +10,11 @@ export type TokenData2 = {
     maturityDate: number,    
 }
 
-export type AccountInfo = {
-    accountAddress: string,
-    accountType: string,
-}
 
 //blueprint for the store type we want to create
 type Store = {
     selectedToken: TokenData2 | null; //store will have a variable selectedToken of type TokenData or null
     setSelectedToken: (token: TokenData2) => void; //store will have a function setSelectedToken which will take a TokenData as a prop;
-
-    currentAccountInfo: AccountInfo | null;
-    setAccountInfo: (info: AccountInfo) => void;
-
 };
 
 //Creation of the store object
@@ -32,7 +24,4 @@ export const useTokenStore = create<Store>((set) => ({
 //the selectedToken prop to token.
     selectedToken: null,
     setSelectedToken: (token) => set({ selectedToken: token}),
-
-    currentAccountInfo: null,
-    setAccountInfo: (info) => set({ currentAccountInfo: info}),
 }))

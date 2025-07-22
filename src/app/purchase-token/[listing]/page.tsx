@@ -3,9 +3,10 @@
 
 import {usePathname} from 'next/navigation';
 import {useState, useEffect} from 'react';
-import {getMMAccounts, isListed, getTokInfo} from '../../blockchain/search';
-import {useDataStore, TokenData} from "../../store/dataStore";
+import {getMMAccounts, isListed2, getTokInfo2} from '../../blockchain/search';
+import {useTokenStore, TokenData2} from "../../store/dataStore";
 
+declare var window: any;
 
 export default function (){
     const [connected, setConnected] = useState(false);
@@ -13,17 +14,17 @@ export default function (){
     const [haveError, setError] = useState(false);    
     const [loading, setLoading] = useState<boolean>(true);
     const [listed, setListed] = useState<boolean>(true);
-    const [token, setToken] = useState<TokenData | null>(null);
+    const [token, setToken] = useState<TokenData2 | null>(null);
 
     //check pathname to see that token is listed
     const pathname = usePathname(); // /purchase-token/{id}
     const tokenId = Number(pathname.substring(16));
 
-    const storedToken = useDataStore((state) => state.selectedToken);
-
+    const storedToken = useTokenStore((state) => state.selectedToken);
+    
     async function checkListed(tokenId: number){
         try {
-            const listed :boolean = await isListed(tokenId);
+            const listed :boolean = await isListed2(tokenId);
             if (listed) {
                 setListed(true);
             } else {
@@ -57,7 +58,7 @@ export default function (){
             if (!storedToken){
                 //no token found in state, need to load from blockchain
                 try {
-                    const t : (TokenData | null) = await getTokInfo(tokenId);
+                    const t : (TokenData2 | null) = await getTokInfo2(tokenId);
                     if (t == null){
                         console.log("Error in getTokenInfo");
                         setLoading(false);
@@ -118,8 +119,8 @@ export default function (){
             </ul>
 
             <ul className={"flex flex-row mt-10 gap-4 items-center"}>
-                <li className={"text-3xl"}>{token.info}</li>
-                <li className={"text-xl text-gray-500"}>id: #{token.tokenId}</li>
+                <li className={"text-3xl"}>{token?.name}</li>
+                <li className={"text-xl text-gray-500"}>id: #{token?.tokenId}</li>
             </ul>
 
             <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full mt-10"}>
