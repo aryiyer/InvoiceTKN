@@ -4,10 +4,12 @@ import { checkConnection } from "../blockchain/search";
 import { mintTkn } from "../blockchain/write";
 import {useEffect, useState} from "react";
 import { useAccountStore } from "../store/accountStore";
+import {useRouter} from "next/navigation";
 
 export default function (){
     const [date, setDate] = useState<string>("");
     const [loading, setLoading] = useState<Boolean>(false);
+    const rout = useRouter();
 
     const currentAccountInfo = useAccountStore((state) => state.currentAccountInfo);
     const setAccountInfo = useAccountStore((state) => state.setAccountInfo);
@@ -27,6 +29,7 @@ export default function (){
         await setLoading(true);
         await mintTkn(name, String(currentAccountInfo?.accountAddress), String(currentAccountInfo?.accountAddress), days, Number(value), _yield);
         setLoading(false);
+        rout.push("/my-account/");
     }
 
     useEffect(() => {
