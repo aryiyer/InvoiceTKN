@@ -25,7 +25,7 @@ export default function (){
 
     async function listButtonClick(formData: FormData){
         //await listForm(formData);
-        const listRes = await listCoin2(Number(formData.get("tokenId")), Number(formData.get("value")));
+        const listRes = await listCoin2(Number(formData.get("tokenId")), Number(formData.get("value"))*1000000000);
         setSuccess(listRes);
         
         await sleep(3000);
@@ -100,8 +100,8 @@ export default function (){
                     </div>
 
                     <div className={"mt-7"}>   
-                        <label htmlFor="value">Value of Listing:   </label>
-                        <input type="number" id="value" name="value" className={"border-1 border-solid border-black rounded-sm"}></input>
+                        <label htmlFor="value">Price Listing (ETH):   </label>
+                        <input type="number" id="value" name="value" className={"border-1 border-solid border-black rounded-sm"} step="0.001"></input>
                     </div>
 
                     <div className={"mt-7"}>

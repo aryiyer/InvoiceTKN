@@ -3,7 +3,7 @@
 import { checkConnection } from "../blockchain/search";
 import { mintTkn } from "../blockchain/write";
 import {useEffect, useState} from "react";
-import { useAccountStore, AccountInfo } from "../store/accountStore";
+import { useAccountStore } from "../store/accountStore";
 
 export default function (){
     const [date, setDate] = useState<string>("");
@@ -19,7 +19,8 @@ export default function (){
         const diff = (Number(_date)-Number(currDate));
         const days = diff/1000/60/60/24;
 
-        const value = formData.get("value");
+        var value = Number(formData.get("value"));
+        value = value*1000000000;
         var _yield = Number(formData.get("yield"))*100;
         //console.log(name, days, value, _yield);
         
@@ -61,8 +62,8 @@ export default function (){
                         </div>
 
                         <div className={"mt-7"}>   
-                            <label htmlFor="value">Value of Invoice:   </label>
-                            <input type="number" id="value" name="value" className={"border-1 border-solid border-black rounded-sm"} min="0"></input>
+                            <label htmlFor="value">Value of Invoice (ETH):   </label>
+                            <input type="number" id="value" name="value" className={"border-1 border-solid border-black rounded-sm"} min="0" step="0.0001"></input>
                         </div>
 
                         <div className={"mt-7"}>   

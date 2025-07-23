@@ -58,7 +58,7 @@ export default function DynamicRoute(props: any){
                 }
             } else {
                 console.log("token found in state.");
-                console.log(storedToken.name);
+                setListed(await isListed2(tokenId));
                 await setToken(storedToken);
                 setLoading(false);
             }
@@ -89,7 +89,7 @@ export default function DynamicRoute(props: any){
                             <li className={"text-xl text-gray-500"}>id: #{token?.tokenId}</li>
                         </ul>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
-                            <li className={"text-3xl"}>${token?.value}</li>
+                            <li className={"text-3xl"}>${String(Number(token?.value)/1000000000)}</li>
                             <li className={"text-xl text-gray-500"}>{Number(token?.yield)/100}%</li>
                         </ul>
 
@@ -125,7 +125,7 @@ export default function DynamicRoute(props: any){
                             <li className={"text-xl text-gray-500"}>id: #{token?.tokenId}</li>
                         </ul>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
-                            <li className={"text-3xl"}>${token?.value}</li>
+                            <li className={"text-3xl"}>${String(Number(token?.value)/1000000000)}</li>
                             <li className={"text-xl text-gray-500"}>{Number(token?.yield)/100}%</li>
                         </ul>
 

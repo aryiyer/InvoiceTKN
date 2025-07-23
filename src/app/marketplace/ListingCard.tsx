@@ -68,10 +68,10 @@ export default function ListingCard() {
                 </div>
                 );       
 
-                const ValueBox = (<div>{t.token.value}</div>);
+                const ValueBox = (<div>{Number(t.token.value)/1000000000} ETH</div>);
                 const DateBox = (<div>{(new Date(t.token.maturityDate*1000)).toLocaleDateString(undefined, options)}</div>);
-                const YieldBox = (<div>{t.token.yield/100}</div>);
-                const PriceBox = (<div>{String(t.tokenPrice)}</div>);
+                const YieldBox = (<div>{t.token.yield/100}%</div>);
+                const PriceBox = (<div>{String(Number(t.tokenPrice)/1000000000)} ETH</div>);
                 const url = "/token/" + t.token.tokenId;
                 const MoreInfoBox = (
                 <div>
@@ -84,10 +84,10 @@ export default function ListingCard() {
                     <div key={i} className = {styles.BigBox}>
                         <ul className = {"flex flex-row justify-evenly"}>
                             <li>{IconNameBox}</li>
-                            <li>{ValueBox}</li>
-                            <li>{DateBox}</li>
+                            <li>{ValueBox}</li>                            
                             <li>{YieldBox}</li>
                             <li>{PriceBox}</li>
+                            <li>{DateBox}</li>
                             <li>{MoreInfoBox}</li>
                         </ul>  
                     </div>
