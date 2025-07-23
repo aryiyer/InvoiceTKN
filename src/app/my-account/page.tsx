@@ -18,7 +18,7 @@ export default function() {
 
     useEffect(() => {
         async function getData(){
-            checkConnection(storedAccountInfo, setAccountInfo); //sets the account in state
+            await checkConnection(storedAccountInfo, setAccountInfo); //sets the account in state
             //get page-necessary data using account
             const owned: Number[] = await getTokensOwned2(String(storedAccountInfo?.accountAddress));
             setOwnedData(owned);
