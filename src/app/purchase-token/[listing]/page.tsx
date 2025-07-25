@@ -3,16 +3,21 @@
 
 import {usePathname} from 'next/navigation';
 import {useState, useEffect} from 'react';
-import {isListed2, getTokInfo2, checkConnection} from '../../blockchain/search';
+import {isListed2, getTokInfo2, checkConnection, listingPrice, getAccountBalance, ownerOfToken, weiToEth, ethToWei} from '../../blockchain/search';
+import { buyToken } from '@/app/blockchain/write';
 import {useTokenStore, TokenData2} from "../../store/dataStore";
 import { useAccountStore } from "../../store/accountStore";
+import {useRouter} from "next/navigation";
 
 declare var window: any;
 
 export default function (){
     const [loading, setLoading] = useState<boolean>(true);
-    const [listed, setListed] = useState(null);
+    const [listed, setListed] = useState();
+    const [listPrice, setListPrice] = useState(); //listPrice in wei
+    const [errorMessage, setMessage] = useState("");
     const [token, setToken] = useState<TokenData2 | null>(null);
+    const rout = useRouter();
 
     //retrieve account info from store
     const currentAccountInfo = useAccountStore((state) => state.currentAccountInfo);
@@ -24,16 +29,37 @@ export default function (){
     //retrieve token info from store
     const storedToken = useTokenStore((state) => state.selectedToken);
 
+    async function purchaseClicked(){
+        //check balance of user
+        const bal = await getAccountBalance(String(currentAccountInfo?.accountAddress));
+        console.log("user bal", bal);
+        console.log("token price", Number(listPrice));
+        //check that balance of user equals or exceeds token
+        if (Number(listPrice) > bal){
+            setMessage("User balance is not enough for transaction!");
+        } else {
+            console.log("User balance is sufficient for transaction.");
+            //attempt to call buyToken method
+            console.log("list price:", listPrice);
+            await buyToken(tokenId, await ownerOfToken(tokenId), String(currentAccountInfo?.accountAddress), String(listPrice));
+            rout.push("/my-account/");
+        }
+    }
+
     useEffect(() => {
         async function init(){
-            checkConnection(currentAccountInfo, setAccountInfo);
-            setLoading(false);
+            checkConnection(currentAccountInfo, setAccountInfo);            
             if (!storedToken){
                 setToken(await getTokInfo2(tokenId));
             } else {
                 setToken(storedToken);
             }
-            setListed(await isListed2(tokenId));
+            const isListed = await isListed2(tokenId)
+            setListed(isListed);
+            if (isListed){
+                setListPrice(await listingPrice(tokenId));
+            }
+            setLoading(false);
         }
         init();
 
@@ -41,7 +67,7 @@ export default function (){
 
     if (loading){
         return(
-            <div>Loading...</div>
+            <div className={"flex items-center justify-center min-h-screen"}>Loading...</div>
         );
     }
 
@@ -95,20 +121,25 @@ export default function (){
             </ul>
 
             <ul className={"flex flex-row mt-10 gap-4"}>
-                <li className={"text-3xl font-bold"}>Invoice Value:</li>
+                <li className={"text-2xl font-bold"}>Token Value:</li>
                 <div>
-                    <li className={"text-3xl"}>{String((Number(token?.value)*(1+Number(token?.yield)/10000))/1000000000)} ETH</li>
-                    <li className={"text-xl text-gray-500"}>Value: {String((Number(token?.value))/1000000000)} ETH, Yield: {Number(token?.yield)/100}%</li>
+                    <li className={"text-3xl"}>{weiToEth((Number(token?.value)*(1+Number(token?.yield)/10000)))} ETH</li>
+                    <li className={"text-xl text-gray-500"}>Invoice Value: {weiToEth((Number(token?.value)))} ETH, Yield: {Number(token?.yield)/100}%</li>
                 </div>
             </ul>
 
-            <ul className={"flex flex-row mt-10 gap-4 items-center"}>
-                
+            <ul className={"flex flex-row mt-7 gap-4 items-center"}>
+                <li className={"text-2xl"}>Token Price:</li>
+                <li className={"text-2xl"}>{weiToEth(Number(listPrice))} ETH</li>
             </ul>
             
-            <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full mt-10"}>
+            <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full mt-10"} onClick={purchaseClicked}>
                 Purchase
             </button>
+
+            <div className="text-l text-red-500 mt-3">
+                    {errorMessage}
+            </div>
         </div>
     );
 
