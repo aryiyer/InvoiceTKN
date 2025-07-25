@@ -1,6 +1,6 @@
 'use client'
 
-import { checkConnection } from "../blockchain/search";
+import { checkConnection, ethToWei } from "../blockchain/search";
 import { mintTkn } from "../blockchain/write";
 import {useEffect, useState} from "react";
 import { useAccountStore } from "../store/accountStore";
@@ -21,13 +21,13 @@ export default function (){
         const diff = (Number(_date)-Number(currDate));
         const days = diff/1000/60/60/24;
 
-        var value = Number(formData.get("value"));
-        value = value*1000000000;
+        var value = String(formData.get("value"));
         var _yield = Number(formData.get("yield"))*100;
-        //console.log(name, days, value, _yield);
+        
         
         await setLoading(true);
-        await mintTkn(name, String(currentAccountInfo?.accountAddress), String(currentAccountInfo?.accountAddress), days, Number(value), _yield);
+        //Minting with value in WEI
+        await mintTkn(name, String(currentAccountInfo?.accountAddress), String(currentAccountInfo?.accountAddress), days, value, _yield);
         setLoading(false);
         rout.push("/my-account/");
     }

@@ -2,7 +2,7 @@
 
 import {useState, useEffect} from 'react';
 import { AccountInfo, useAccountStore } from '../store/accountStore';
-import { getMMAccounts, getTokensOwned2, getTokensNotListed2, checkConnection } from '../blockchain/search';
+import { getMMAccounts, getTokensOwned2, getTokensNotListed2, checkConnection, ethToWei, weiToEth } from '../blockchain/search';
 import {listCoin2} from '../blockchain/write';
 import {useRouter} from "next/navigation";
 
@@ -24,8 +24,8 @@ export default function (){
     };    
 
     async function listButtonClick(formData: FormData){
-        //await listForm(formData);
-        const listRes = await listCoin2(Number(formData.get("tokenId")), Number(formData.get("value"))*1000000000);
+        //Listing takes in ETH and converts to WEI
+        const listRes = await listCoin2(Number(formData.get("tokenId")), Number(ethToWei(Number(formData.get("value")))));
         setSuccess(listRes);
         
         await sleep(3000);
@@ -100,7 +100,14 @@ export default function (){
                     </div>
 
                     <div className={"mt-7"}>   
-                        <label htmlFor="value">Price Listing (ETH):   </label>
+                        <div>Recommended Price:{
+                            
+                            }</div>
+                        
+                    </div>
+
+                    <div className={"mt-7"}>   
+                        <label htmlFor="value">Listing Price (ETH):   </label>
                         <input type="number" id="value" name="value" className={"border-1 border-solid border-black rounded-sm"} step="0.001"></input>
                     </div>
 
