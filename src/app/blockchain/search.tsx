@@ -86,8 +86,8 @@ export async function getAccountBalance(account: string){
 			"latest"
 		],
 	});	
-	//return result in gwei
-	return Number(result/1000000000);
+	//return result in wei
+	return Number(result);
 }
 
 export async function getListed2(){
@@ -106,11 +106,12 @@ export async function getListed2(){
 				var data : TokenData2 = {
 					tokenId: Number(result.tokenId),
 					name: String(result.name),
-					value: Number(result.value),
+					value: Number(result.value), //in WEI
 					yield: Number(result.yield),
 					valid: Boolean(result.valid),
 					minter: String(result.minter),
 					maturityDate: Number(result.maturityDate),
+					mintedDate: Number(result.mintedDate),
 				}
 				ListedInfo.push(data);
 			}
@@ -123,6 +124,7 @@ export async function getListed2(){
 	}	
 }
 
+//return listing price in WEI
 export async function listingPrice(tokenId: number){
 	console.log("Web3: Calling listingPrice.");
 	try {
@@ -169,11 +171,12 @@ export async function getTokInfo2(tokenId: number){
 		var data : TokenData2 = {
 			tokenId: Number(result.tokenId),
 			name: String(result.name),
-			value: Number(result.value),
+			value: Number(result.value), //in wei
 			yield: Number(result.yield),
 			valid: Boolean(result.valid),
 			minter: String(result.minter),
 			maturityDate: Number(result.maturityDate),
+			mintedDate: Number(result.mintedDate),
 		}
 		return data;
     } catch (error) {
@@ -241,4 +244,22 @@ export async function isListed2(tokenId: number){
 	} catch (error) {
 		console.error(error);
 	}
+}
+
+export async function ownerOfToken(tokenId: number){
+	console.log("Web3: Calling ownerOfToken");
+	try {
+		const addy = await nftContract.methods.ownerOf(tokenId).call();
+		return addy;
+	} catch (error){
+		console.log(error);
+	}
+}
+
+export function ethToWei(val : Number | String) {
+	return (web3.utils.toWei(String(val), "ether"));
+}
+
+export function weiToEth(val : Number | String) {
+	return (web3.utils.fromWei(String(val), "ether"));
 }

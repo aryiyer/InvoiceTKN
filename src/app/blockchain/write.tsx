@@ -19,10 +19,12 @@ const marketplaceContract = new web3MM.eth.Contract(marketplace_abi, marketplace
 
 /* NFT CONTRACT WRITE FUNCTIONS */
 
-export async function mintTkn(name :string, minter: string, to : string, daysAfter: number, value : number, _yield : number) {
+export async function mintTkn(name :string, minter: string, to : string, daysAfter: number, value : String, _yield : number) {
 	console.log("Web3: Calling mintTkn.");
+	const wei = Number(web3MM.utils.toWei(value, "ether"));
+	console.log("wei val", wei);
 	try {
-		await nftContract.methods.mintToken(name, minter, to, daysAfter, value, _yield).send({
+		await nftContract.methods.mintToken(name, daysAfter, wei, _yield).send({
 			from: minter,
 		});
 		console.log("Minted token.");
@@ -70,6 +72,7 @@ export async function deleteUser(address: string, fromAddy : any) {
 
 /* MARKETPLACE WRITE FUNCTIONS */
 
+//lists token in gwei
 export async function listCoin2(tokenId: number, price: number){
     const accounts = await web3MM.eth.requestAccounts();
     console.log("Web3: Calling listCoin2");
@@ -100,36 +103,39 @@ export async function delistCoin2(tokenId: number){
     }
 }
 
-//token being purchases, person purchasing.
-//token being purchased should contain info on current owner and listing price.
-//person purchasing should contain info on their address
+//assumes that the user balance has been verified to have sufficient balance
+//_value is in ETH, is converted into WEI for the transfer.
+export async function buyToken(tokenId: number, sellerAcc: string, buyerAcc: string, _value: String){
+	console.log("Web3: Calling buyToken");
+	try {
+		const accounts = await web3MM.eth.requestAccounts();
+		const res = await transferTokens(buyerAcc, sellerAcc, _value); //transfers _value in (eth) from buyer to seller wallet.				
+		if (res) {
+			await marketplaceContract.methods.buyItem(nftAddress, tokenId, buyerAcc).send({
+            	from: accounts[0],
+        	});
+		}
+		console.log("gurt purchased");
+	} catch (error) {
+		console.error(error);
+	}
+}		
 
-//for now, purchase is free.
-// export async function purchaseCoinTemp(tokenId: number){
-//     console.log("Web3: Calling purchaseCoinTemp");
-//     const accounts = await web3MM.eth.requestAccounts();
-//     var ownerAccount;
-
-//     //get owner of token being purchased
-//     try {
-//         ownerAccount = await contract.methods.ownerOf(tokenId).call();
-//         console.log("Token owner: " + ownerAccount);
-//         //check that purchaser has sufficient balance
-//         var balance = await web3MM.eth.getBalance(accounts[0]);
-//         balance = Number(balance)/1000000000000000000;
-//         console.log(accounts[0] + "balance: "+ balance);
-//         /*if (balance >= price)
-//             try {
-//                 transfer amount
-//                 deListToken(tokenId)
-//                 tranferToken(from, to, etc.);
-//             } catch {error}
-//         */
-
-//     } catch (error) {
-//         console.log("Error getting ownerOf token.");
-//         console.error(error);
-//     }
-    
-// }
+export async function transferTokens(_from : string, _to :string, amount: String) {
+		console.log("Web3: calling transferTokens");
+		//const wei = web3MM.utils.toWei(amount, "ether");
+		const wei = amount;
+		try {
+			const hash = await web3MM.eth.sendTransaction({
+				from: _from,
+				to: _to,
+				value: wei,
+			});
+			console.log("transferred, hash:", hash);
+			return(true);
+		} catch (error) {
+			console.error("gurt error", error);
+			return(false);
+		}
+}
 
