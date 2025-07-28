@@ -61,13 +61,19 @@ export default function ListingCard() {
 
     return (
         <>
-            {data.map(function(t, i){
-                const IconNameBox = (
-                <div className = {"flex flex-col justify-evenly"}>
-                    <div>{t.token.name}</div>
-                </div>
-                );       
+            <div className={styles.Header}>
+                <ul>
+                    <li>Name</li>
+                    <li>Invoice Value</li>                            
+                    <li>Yield</li>
+                    <li>Token Price</li>
+                    <li>Maturity Date</li>                            
+                    
+                </ul>  
+            </div>
 
+            {data.map(function(t, i){
+                const IconNameBox = (<div>{t.token.name}</div>);       
                 const ValueBox = (<div>{weiToEth(Number(t.token.value))} ETH</div>);
                 const DateBox = (<div>{(new Date(t.token.maturityDate*1000)).toLocaleDateString(undefined, options)}</div>);
                 const YieldBox = (<div>{t.token.yield/100}%</div>);
@@ -82,7 +88,7 @@ export default function ListingCard() {
 
                 return (
                     <div key={i} className = {styles.BigBox}>
-                        <ul className = {"flex flex-row justify-evenly"}>
+                        <ul>
                             <li>{IconNameBox}</li>
                             <li>{ValueBox}</li>                            
                             <li>{YieldBox}</li>
