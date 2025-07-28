@@ -164,7 +164,7 @@ export async function getMinted2(address: string){
 	}
 }
 
-export async function getTokInfo2(tokenId: number){
+export async function getTokInfo2(tokenId: Number){
 	console.log("Web3: Called getTokInfo2");
 	try {
         let result = await nftContract.methods.getTokenInfo(tokenId).call();
@@ -181,7 +181,7 @@ export async function getTokInfo2(tokenId: number){
 		return data;
     } catch (error) {
         console.error(error);
-		return null;
+		throw new Error("getTokInfo2 failed")
     }
 }
 
@@ -262,4 +262,26 @@ export function ethToWei(val : Number | String) {
 
 export function weiToEth(val : Number | String) {
 	return (web3.utils.fromWei(String(val), "ether"));
+}
+
+export async function liveValue(tokenId: Number){
+	//get minted and maturity stamps, calculate total maturity time in seconds
+	//get current time, in seconds
+	const token : TokenData2 = await getTokInfo2(tokenId);
+	const mintedTime = token.mintedDate;
+	const matureTime = token.maturityDate;
+
+	const totalTime = matureTime - mintedTime;
+	const currTime = Date.now()/1000; //in seconds
+	const completion = (currTime-mintedTime)/totalTime;
+	console.log("completion:", completion);
+
+	const value = token.value
+	const yieldd = token.yield/10000; //decimal
+	
+	const endValue = value*(yieldd); //in wei
+	
+	const currValue = (completion*endValue);
+	const eth = Number(weiToEth(currValue+value));
+	return(eth.toFixed(8));
 }
