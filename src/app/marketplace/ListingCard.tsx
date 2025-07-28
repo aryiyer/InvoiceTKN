@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import {useTokenStore} from "../store/dataStore";
 import {useEffect, useState} from "react";
 import styles from "./ListingCard.module.css";
-import {getListed2, listingPrice} from "../blockchain/search";
+import {getListed2, listingPrice, weiToEth} from "../blockchain/search";
 
 const options = {
   year: "numeric",
@@ -37,7 +37,7 @@ export default function ListingCard() {
                 const listed = await getListed2();
                 var items : stuff[] = [];
                 for (let i = 0; i < listed.length; i++){
-                    const price = await listingPrice(listed[i].tokenId);
+                    const price = await listingPrice(listed[i].tokenId); //listing price is in WEI
                     const thing : stuff = {
                         token: listed[i],
                         tokenPrice: price
@@ -68,10 +68,10 @@ export default function ListingCard() {
                 </div>
                 );       
 
-                const ValueBox = (<div>{Number(t.token.value)/1000000000} ETH</div>);
+                const ValueBox = (<div>{weiToEth(Number(t.token.value))} ETH</div>);
                 const DateBox = (<div>{(new Date(t.token.maturityDate*1000)).toLocaleDateString(undefined, options)}</div>);
                 const YieldBox = (<div>{t.token.yield/100}%</div>);
-                const PriceBox = (<div>{String(Number(t.tokenPrice)/1000000000)} ETH</div>);
+                const PriceBox = (<div>{weiToEth(Number(t.tokenPrice))} ETH</div>);
                 const url = "/token/" + t.token.tokenId;
                 const MoreInfoBox = (
                 <div>

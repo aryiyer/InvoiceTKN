@@ -4,11 +4,13 @@ import {useState, useEffect} from 'react';
 import { AccountInfo, useAccountStore } from '../store/accountStore';
 import { getMMAccounts, getTokensOwned2, getTokensNotListed2, checkConnection, ethToWei, weiToEth } from '../blockchain/search';
 import {listCoin2} from '../blockchain/write';
+import { liveValue } from '../blockchain/search';
 import {useRouter} from "next/navigation";
 
 export default function (){
     const [ownedData, setOwnedData] = useState<Number[]>([]);
     const [success, setSuccess] = useState<boolean>();
+    const [recPrice, setRec] = useState<String>("Select a token to see recommended price.");
     const rout = useRouter();
 
     const currentAccountInfo = useAccountStore((state) => state.currentAccountInfo);
@@ -17,9 +19,9 @@ export default function (){
     async function tokensOwned(address: string) {
         const owned: Number[] = await getTokensOwned2(address);
         const listed: Number[] = await getTokensNotListed2(owned);
-        for (let i = 0; i < owned.length; i++){
-            console.log(owned[i]);
-        }
+        // for (let i = 0; i < owned.length; i++){
+        //     console.log(owned[i]);
+        // }
         setOwnedData(listed);
     };    
 
@@ -31,6 +33,12 @@ export default function (){
         await sleep(3000);
         rout.push("/marketplace/");
     }
+
+    async function handleChange(event : any){
+        if (event.target.value != "Select a Token..."){
+            setRec(await liveValue(Number(event.target.value)));
+        };
+    };
 
     function sleep(ms : number) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -89,7 +97,8 @@ export default function (){
                 <form action={listButtonClick} className={"flex flex-col align-center ml-15 mt-20"}>
                     <div>
                         <label htmlFor="tokenId">Select Token To List: </label>
-                        <select id="tokenId" name="tokenId" className={"border-1 border-solid border-black rounded-sm"}>
+                        <select id="tokenId" name="tokenId" className={"border-1 border-solid border-black rounded-sm"} onChange={handleChange}>
+                            <option>Select a Token...</option>
                             {ownedData.map((id: Number, i) => {
                                 return(
                                     <option key={i} className={""} value={Number(id)}>
@@ -100,15 +109,15 @@ export default function (){
                     </div>
 
                     <div className={"mt-7"}>   
-                        <div>Recommended Price:{
-                            
+                        <div>Recommended Price: &nbsp; {                            
+                                (recPrice)                                                        
                             }</div>
                         
                     </div>
 
                     <div className={"mt-7"}>   
                         <label htmlFor="value">Listing Price (ETH):   </label>
-                        <input type="number" id="value" name="value" className={"border-1 border-solid border-black rounded-sm"} step="0.001"></input>
+                        <input type="number" id="value" name="value" className={"border-1 border-solid border-black rounded-sm"} step="0.000001"></input>
                     </div>
 
                     <div className={"mt-7"}>

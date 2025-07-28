@@ -121,7 +121,7 @@ export default function (){
             </ul>
 
             <ul className={"flex flex-row mt-10 gap-4"}>
-                <li className={"text-2xl font-bold"}>Token Value:</li>
+                <li className={"text-2xl font-bold"}>Token Final Value:</li>
                 <div>
                     <li className={"text-3xl"}>{weiToEth((Number(token?.value)*(1+Number(token?.yield)/10000)))} ETH</li>
                     <li className={"text-xl text-gray-500"}>Invoice Value: {weiToEth((Number(token?.value)))} ETH, Yield: {Number(token?.yield)/100}%</li>
@@ -130,7 +130,7 @@ export default function (){
 
             <ul className={"flex flex-row mt-7 gap-4 items-center"}>
                 <li className={"text-2xl"}>Token Price:</li>
-                <li className={"text-2xl"}>{weiToEth(Number(listPrice))} ETH</li>
+                <li className={"text-3xl"}>{weiToEth(Number(listPrice))} ETH</li>
             </ul>
             
             <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full mt-10"} onClick={purchaseClicked}>

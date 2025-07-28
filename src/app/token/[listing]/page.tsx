@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react';
 import {usePathname, useRouter} from 'next/navigation';
 import {useTokenStore} from "../../store/dataStore";
 import {TokenData2} from "../../store/dataStore";
-import {getTokInfo2, isListed2} from "../../blockchain/search";
+import {getTokInfo2, isListed2, listingPrice, weiToEth} from "../../blockchain/search";
 
 const options = {
   weekday: "long",
@@ -20,6 +20,7 @@ export default function DynamicRoute(props: any){
     const [loading, setLoading] = useState(true);
     const [haveError, setError] = useState(false);
     const [listed, setListed] = useState();
+    const [listPrice, setPrice] = useState();
     const [token, setToken] = useState<TokenData2 | null>(null);
 
     const storedToken = useTokenStore((state) => state.selectedToken);
@@ -62,6 +63,7 @@ export default function DynamicRoute(props: any){
                 await setToken(storedToken);
                 setLoading(false);
             }
+            setPrice(weiToEth(await listingPrice(tokenId)));
         }
         fetchData();
     }, []);
@@ -89,13 +91,24 @@ export default function DynamicRoute(props: any){
                             <li className={"text-xl text-gray-500"}>id: #{token?.tokenId}</li>
                         </ul>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
-                            <li className={"text-3xl"}>${String(Number(token?.value)/1000000000)}</li>
+                            <li className={"text-xl font-bold"}>Invoice Value: </li>
+                            <li className={"text-3xl"}>{weiToEth(Number(token?.value))} ETH</li>
                             <li className={"text-xl text-gray-500"}>{Number(token?.yield)/100}%</li>
+                        </ul>
+
+                        <ul className={"flex flex-row mt-6 gap-4 items-center"}>
+                            <li className={"text-xl font-bold"}>Token Price: </li>
+                            <li className={"text-3xl"}>{listPrice} ETH</li>                            
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Minted by: </li>
                             <li className={"text-xl text-gray-700"}>{token?.minter}</li>
+                        </ul>
+
+                        <ul className={"flex flex-row mt-6 gap-4 items-center"}>
+                            <li className={"text-xl font-bold"}>Minted Date: </li>
+                            <li className={"text-xl text-gray-700"}>{(new Date(Number(token?.mintedDate)*1000)).toLocaleDateString(undefined, options)}</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
@@ -125,13 +138,18 @@ export default function DynamicRoute(props: any){
                             <li className={"text-xl text-gray-500"}>id: #{token?.tokenId}</li>
                         </ul>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
-                            <li className={"text-3xl"}>${String(Number(token?.value)/1000000000)}</li>
+                            <li className={"text-3xl"}>{weiToEth(Number(token?.value))} ETH</li>
                             <li className={"text-xl text-gray-500"}>{Number(token?.yield)/100}%</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Minted by: </li>
                             <li className={"text-xl text-gray-700"}>{token?.minter}</li>
+                        </ul>
+
+                        <ul className={"flex flex-row mt-6 gap-4 items-center"}>
+                            <li className={"text-xl font-bold"}>Minted Date: </li>
+                            <li className={"text-xl text-gray-700"}>{(new Date(Number(token?.mintedDate)*1000)).toLocaleDateString(undefined, options)}</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
