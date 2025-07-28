@@ -41,8 +41,15 @@ export default function (){
             console.log("User balance is sufficient for transaction.");
             //attempt to call buyToken method
             console.log("list price:", listPrice);
-            await buyToken(tokenId, await ownerOfToken(tokenId), String(currentAccountInfo?.accountAddress), String(listPrice));
-            rout.push("/my-account/");
+            const tokOwner = String(await ownerOfToken(tokenId)).toLowerCase();
+            const curr = String(currentAccountInfo?.accountAddress).toLowerCase();
+            if (curr === tokOwner){
+                setMessage("Cannot purchase your own token!");
+            } else {
+                console.log("gurt");
+                await buyToken(tokenId, tokOwner, String(currentAccountInfo?.accountAddress), String(listPrice));
+                rout.push("/my-account/");
+            }
         }
     }
 
