@@ -3,7 +3,7 @@
 
 import {usePathname} from 'next/navigation';
 import {useState, useEffect} from 'react';
-import {isListed2, getTokInfo2, checkConnection, listingPrice, getAccountBalance, ownerOfToken, weiToEth, ethToWei} from '../../blockchain/search';
+import {isListed2, getTokInfo2, checkConnection, listingPrice, getAccountBalance, ownerOfToken, weiToEth} from '../../blockchain/search';
 import { buyToken } from '@/app/blockchain/write';
 import {useTokenStore, TokenData2} from "../../store/dataStore";
 import { useAccountStore } from "../../store/accountStore";
@@ -133,7 +133,7 @@ export default function (){
             <ul className={"flex flex-row mt-10 gap-4"}>
                 <li className={"text-2xl font-bold"}>Token Final Value:</li>
                 <div>
-                    <li className={"text-3xl"}>{weiToEth((Number(token?.value)*(1+Math.floor(Number(token?.yield)/10000))))} ETH</li>
+                    <li className={"text-3xl"}>{weiToEth(Math.floor(Number(token?.value)*(1+Number(token?.yield)/10000)))} ETH</li>
                     <li className={"text-xl text-gray-500"}>Invoice Value: {weiToEth((Number(token?.value)))} ETH, Yield: {Number(token?.yield)/100}%</li>
                 </div>
             </ul>
