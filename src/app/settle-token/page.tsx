@@ -79,7 +79,7 @@ export default function() {
         );
     }
 
-    if (currentAccountInfo?.accountType != "minter"){
+    if ((currentAccountInfo?.accountType != "minter") && (currentAccountInfo?.accountType != "owner")){
         return(
             <div>
                 <ul className={"flex flex-col mt-15 ml-15"}>
