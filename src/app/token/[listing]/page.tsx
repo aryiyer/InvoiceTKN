@@ -73,7 +73,7 @@ export default function DynamicRoute(props: any){
     
     if (loading) {
         return(
-            <div>Loading...</div>
+            <div className={"flex items-center justify-center min-h-screen"}>Loading...</div>
         );
     }
 
@@ -198,7 +198,7 @@ export default function DynamicRoute(props: any){
                     </div>
 
                     {validBlock}
-                    
+
                 </li>
                 <li>
                     <div className={"mt-30"}>
