@@ -43,8 +43,10 @@ export async function addUser(address: string, role: string, fromAddy: any) {
 		});
 		
 		console.log("Added user.");
+		return("Added user!");
 	} catch (error) {
 		console.error(error);
+		return("Failed to add user.");
 	}
 }
 
@@ -55,8 +57,10 @@ export async function changeUserRole(address: string, role: string, fromAddy: an
 			from: fromAddy,
 		});
 		console.log("Changed user role.");
+		return("Changed user role.");
 	} catch (error) {
 		console.error(error);
+		return("Failed to change user role.");
 	}
 }
 
@@ -67,8 +71,10 @@ export async function deleteUser(address: string, fromAddy : any) {
 			from: fromAddy,
 		});
 		console.log("Deleted user.");
+		return("Deleted user.");
 	} catch (error) {
 		console.error(error);
+		return("Failed to delete user.");
 	}
 }
 
