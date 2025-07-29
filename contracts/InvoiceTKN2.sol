@@ -18,12 +18,13 @@ contract InvoiceTKN2 is ERC721Enumerable{
         //immutables
         uint256 tokenId;
         string name;
-        uint value;
-        uint yield;
+        uint256 value;
+        uint256 yield;
         //mutables
         bool valid;
         address minter; 
         uint maturityDate;
+        uint mintedDate;
     }
 
 
@@ -32,8 +33,8 @@ contract InvoiceTKN2 is ERC721Enumerable{
         roleList[owner] = "owner";
     }
     
-
-    function mintToken(string memory _name, uint daysAfter, uint _value, uint _yield) public {     
+    //value is in wei
+    function mintToken(string memory _name, uint daysAfter, uint256 _value, uint _yield) public {     
         string memory role = getRole(msg.sender);
         require(compareStrings(role, "minter") || compareStrings(role, "owner"), "Not approved to mint a token.");
         
@@ -48,6 +49,7 @@ contract InvoiceTKN2 is ERC721Enumerable{
             dataStruct.minter = msg.sender;
             //number of seconds after unix epoch + seconds of the maturity period
             dataStruct.maturityDate = block.timestamp + daysAfter*24*60*60;
+            dataStruct.mintedDate = block.timestamp;
         
         //adding minted token to record of minter
         minted[msg.sender].push(_nextTokenId);
@@ -120,9 +122,28 @@ contract InvoiceTKN2 is ERC721Enumerable{
         return (roleList[addy]);
     }
 
-    function setValidity(bool v, uint256 tokenId) public {
-        address tokenOwner = ownerOf(tokenId);
-        require(msg.sender == tokenOwner || isApprovedForAll(tokenOwner, msg.sender) || msg.sender == getApproved(tokenId));
+    function settleToken(uint256 tokenId) public payable {
+
+        
+        require(ownerOf(tokenId) != tokens[tokenId].minter, "Cannot settle a token that you own.");
+
+        require(block.timestamp >= tokens[tokenId].maturityDate-24*60*60, "Token cannot be settled more than 24 hours before maturity date!");
+        require(msg.sender == tokens[tokenId].minter, "Only the token minter can settle the invoice.");
+        uint256 amount = tokens[tokenId].value*(10000+tokens[tokenId].yield)/10000;
+        require(msg.value >= amount, "transaction value is insufficient to settle!");
+        (bool success,) = ownerOf(tokenId).call{value: msg.value}("");
+        require(success, "Failed to transfer amount");
+        setValidity(false, tokenId);
+    }
+
+    function setValidity(bool v, uint256 tokenId) internal {
+        require(contains(tokenId), "setValidity: Token must exist!");
+        require(msg.sender == tokens[tokenId].minter);
         tokens[tokenId].valid = v;
+    }
+
+    function getValidity(uint256 tokenId) public view returns(bool) {
+        require(contains(tokenId), "getValidity: Token must exist!");
+        return tokens[tokenId].valid;
     }
 }
