@@ -23,6 +23,7 @@ export default function Navbar() {
                     <li><a href="/my-account">My Account</a></li>
                     <li><a href="/marketplace">Marketplace</a></li>
                     <li><a href="/mint-token">Mint Token</a></li>
+                    <li><a href="/settle-token">Settle Token</a></li>
                 </ul>
             </header>
         );
