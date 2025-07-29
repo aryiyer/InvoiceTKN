@@ -7,12 +7,12 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 contract ITKNMarketplace {
 
     mapping(uint256 tokenId => Listing) listedTokens;
-    uint256[] keys;
+    uint256[] keys; //list of listings
     uint numListed = 0;
 
     struct Listing {
         uint256 tokenId;
-        uint price;
+        uint256 price;
         bool listed;
         address seller;
     }
@@ -21,8 +21,11 @@ contract ITKNMarketplace {
 
     /* LISTING FUNCTIONS */
 
-    //List Item
-    function listItem(IERC721 nftAddress, uint256 _tokenId, uint _price) public {
+    //List Item, price is in WEI
+    function listItem(IERC721 nftAddress, uint256 _tokenId, uint256 _price) public {
+        //check that token is valid
+        
+
         //check that msg.sender is owner of token
         require(nftAddress.ownerOf(_tokenId) == msg.sender, "Marketplace listItem: sender is not token owner!");
         //check that token is not already listedTokens
@@ -36,7 +39,7 @@ contract ITKNMarketplace {
     }
 
     //Update Listing
-    function updateListing(IERC721 nftAddress, uint256 _tokenId, uint _price) public {
+    function updateListing(IERC721 nftAddress, uint256 _tokenId, uint256 _price) public {
         //check that msg.sender is owner of token
         require(nftAddress.ownerOf(_tokenId) == msg.sender, "Marketplace updateListing: sender is not token owner!");
         //check that token is not already listedTokens
@@ -66,15 +69,15 @@ contract ITKNMarketplace {
     //Buy Item
     function buyItem(IERC721 nftAddress, uint256 _tokenId, address _to) external {
         //Assume that buyer has already been checked to have balance for the transaction
-
+        
         //check that token is listed
         require(listedTokens[_tokenId].listed, "Marketplace buyItem: token is not listed!");
-        
-        listedTokens[_tokenId].listed = false;
-        numListed --;
 
         address tokenOwner = nftAddress.ownerOf(_tokenId); 
+        require(nftAddress.ownerOf(_tokenId) != _to, "Cannot buy a token that you own.");
         nftAddress.safeTransferFrom(tokenOwner, _to, _tokenId);
+
+        delistItem(nftAddress, _tokenId);
     }
 
     /* UTILITY FUNCTIONS */
@@ -95,7 +98,8 @@ contract ITKNMarketplace {
 
     }
 
-    function getListingPrice(uint256 _tokenId) public view returns (uint) {
+    //get listing price in WEI
+    function getListingPrice(uint256 _tokenId) public view returns (uint256) {
         require(listedTokens[_tokenId].listed, "Marketplace buyItem: token is not listed!");
         return listedTokens[_tokenId].price;
     }
