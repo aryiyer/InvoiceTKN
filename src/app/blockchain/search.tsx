@@ -113,7 +113,9 @@ export async function getListed2(){
 					maturityDate: Number(result.maturityDate),
 					mintedDate: Number(result.mintedDate),
 				}
-				ListedInfo.push(data);
+				if (data.valid){
+					ListedInfo.push(data);
+				}
 			}
         }
 	   return Array.from(ListedInfo);
@@ -235,7 +237,7 @@ export async function getTokensNotListed2(allOwned: Number[]){
 	}
 }
 
-export async function isListed2(tokenId: number){
+export async function isListed2(tokenId: Number){
 	console.log("Web3: Calling isListed.");
 	try{
 		const val = await marketplaceContract.methods.isListed(tokenId).call();
