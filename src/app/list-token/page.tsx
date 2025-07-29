@@ -1,8 +1,9 @@
 'use client'
 
 import {useState, useEffect} from 'react';
-import { AccountInfo, useAccountStore } from '../store/accountStore';
-import { getMMAccounts, getTokensOwned2, getTokensNotListed2, checkConnection, ethToWei, weiToEth } from '../blockchain/search';
+import { useAccountStore } from '../store/accountStore';
+import { getTokensOwned2, getTokInfo2, getTokensNotListed2, checkConnection, ethToWei } from '../blockchain/search';
+import { TokenData2 } from '../store/dataStore';
 import {listCoin2} from '../blockchain/write';
 import { liveValue } from '../blockchain/search';
 import {useRouter} from "next/navigation";
@@ -19,10 +20,14 @@ export default function (){
     async function tokensOwned(address: string) {
         const owned: Number[] = await getTokensOwned2(address);
         const listed: Number[] = await getTokensNotListed2(owned);
-        // for (let i = 0; i < owned.length; i++){
-        //     console.log(owned[i]);
-        // }
-        setOwnedData(listed);
+        var notListedValid : Number[] = [];
+        for (let i = 0; i < listed.length; i++){
+            const t : TokenData2 = await getTokInfo2(listed[i]);
+            if (t.valid){
+                notListedValid.push(t.tokenId);
+            }
+        }
+        setOwnedData(notListedValid);
     };    
 
     async function listButtonClick(formData: FormData){
