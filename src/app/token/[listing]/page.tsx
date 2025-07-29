@@ -21,6 +21,7 @@ export default function DynamicRoute(props: any){
     const [haveError, setError] = useState(false);
     const [listed, setListed] = useState();
     const [listPrice, setPrice] = useState();
+    const [valid, setValid] = useState<Boolean>();
     const [token, setToken] = useState<TokenData2 | null>(null);
 
     const storedToken = useTokenStore((state) => state.selectedToken);
@@ -52,6 +53,7 @@ export default function DynamicRoute(props: any){
                     } else {
                         console.log("found tokenInfo from blockchain.");
                         setToken(t);
+                        setValid(t.valid);                    
                         setLoading(false);
                     }
                 } catch (error) {
@@ -60,7 +62,8 @@ export default function DynamicRoute(props: any){
             } else {
                 console.log("token found in state.");
                 setListed(await isListed2(tokenId));
-                await setToken(storedToken);
+                await setToken(storedToken);       
+                setValid(storedToken.valid);                         
                 setLoading(false);
             }
             setPrice(weiToEth(await listingPrice(tokenId)));
@@ -81,6 +84,23 @@ export default function DynamicRoute(props: any){
     }
 
     if (listed){
+
+        var validBlock;
+        if (valid){
+            validBlock = (
+                <ul className={"flex flex-row mt-6 gap-4 items-center"}>
+                    <li className={"text-xl font-bold text-green-700"}>Valid </li>
+                </ul>
+            );
+        } else {
+            validBlock = (
+                <ul className={"flex flex-row mt-6 gap-4 items-center"}>
+                    <li className={"text-xl font-bold text-red-700"}>Invalid </li>
+                </ul>
+            );        
+        }
+
+
         return (
         <div>
             <ul className={"flex flex-row items-center justify-evenly"}>
@@ -115,6 +135,9 @@ export default function DynamicRoute(props: any){
                             <li className={"text-xl font-bold"}>Maturity Date: </li>
                             <li className={"text-xl text-gray-700"}>{(new Date(Number(token?.maturityDate)*1000)).toLocaleDateString(undefined, options)}</li>
                         </ul>
+
+                        {validBlock}
+
                     </div>
                 </li>
                 <li>
@@ -128,6 +151,22 @@ export default function DynamicRoute(props: any){
         </div>        
     );
     } else {
+
+        var validBlock;
+        if (valid){
+            validBlock = (
+                <ul className={"flex flex-row mt-6 gap-4 items-center"}>
+                    <li className={"text-xl font-bold text-green-700"}>Valid </li>
+                </ul>
+            );
+        } else {
+            validBlock = (
+                <ul className={"flex flex-row mt-6 gap-4 items-center"}>
+                    <li className={"text-xl font-bold text-red-700"}>Invalid </li>
+                </ul>
+            );        
+        }
+
         return (
         <div>
             <ul className={"flex flex-row items-center justify-evenly"}>
@@ -157,6 +196,9 @@ export default function DynamicRoute(props: any){
                             <li className={"text-xl text-gray-700"}>{(new Date(Number(token?.maturityDate)*1000)).toLocaleDateString(undefined, options)}</li>
                         </ul>
                     </div>
+
+                    {validBlock}
+                    
                 </li>
                 <li>
                     <div className={"mt-30"}>
