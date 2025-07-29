@@ -152,8 +152,7 @@ export async function listingInfo(tokenId: number){
 }
 
 export async function getMinted2(address: string){
-	console.log("Web3: Called getMinted2 with address:", address);
-	
+	console.log("Web3: Called getMinted2", address);
 	try {
 		const result = await nftContract.methods.getMintedTokens(address).call();
 		const idArr = result.map((id: any) => Number(id));

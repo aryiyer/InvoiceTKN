@@ -30,12 +30,14 @@ export default function (){
     const storedToken = useTokenStore((state) => state.selectedToken);
 
     async function purchaseClicked(){
+        setLoading(true);
         //check balance of user
         const bal = await getAccountBalance(String(currentAccountInfo?.accountAddress));
         console.log("user bal", bal);
         console.log("token price", Number(listPrice));
         //check that balance of user equals or exceeds token
         if (Number(listPrice) > bal){
+            setLoading(false);
             setMessage("User balance is not enough for transaction!");
         } else {
             console.log("User balance is sufficient for transaction.");
@@ -44,6 +46,7 @@ export default function (){
             const tokOwner = String(await ownerOfToken(tokenId)).toLowerCase();
             const curr = String(currentAccountInfo?.accountAddress).toLowerCase();
             if (curr === tokOwner){
+                setLoading(false);
                 setMessage("Cannot purchase your own token!");
             } else {
                 console.log("gurt");
@@ -130,7 +133,7 @@ export default function (){
             <ul className={"flex flex-row mt-10 gap-4"}>
                 <li className={"text-2xl font-bold"}>Token Final Value:</li>
                 <div>
-                    <li className={"text-3xl"}>{weiToEth((Number(token?.value)*(1+Number(token?.yield)/10000)))} ETH</li>
+                    <li className={"text-3xl"}>{weiToEth((Number(token?.value)*(1+Math.floor(Number(token?.yield)/10000))))} ETH</li>
                     <li className={"text-xl text-gray-500"}>Invoice Value: {weiToEth((Number(token?.value)))} ETH, Yield: {Number(token?.yield)/100}%</li>
                 </div>
             </ul>
