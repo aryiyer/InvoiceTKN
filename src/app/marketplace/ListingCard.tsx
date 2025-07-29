@@ -55,7 +55,7 @@ export default function ListingCard() {
     }, []);
 
     if(loading){
-        return <div>Loading...</div>
+        <div className={"flex items-center justify-center min-h-screen"}>Loading...</div>
     }
 
 
