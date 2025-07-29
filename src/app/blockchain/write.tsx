@@ -1,5 +1,7 @@
 const { Web3 } = require('web3');
 import { marketplace_abi, marketplaceAddress, nft_abi, nftAddress } from "./nft_abi";
+import { TokenData2 } from "../store/dataStore";
+import { getTokInfo2, isListed2 } from "./search";
 
 import {MetaMaskSDK} from "@metamask/sdk";
 
@@ -77,6 +79,10 @@ export async function listCoin2(tokenId: number, price: number){
     const accounts = await web3MM.eth.requestAccounts();
     console.log("Web3: Calling listCoin2");
     try {
+		const t : TokenData2 = await getTokInfo2(tokenId);
+		if (!(t.valid)){
+			throw new Error("Token is invalid and cannot be listed.");
+		}
 		await nftContract.methods.approve(marketplaceAddress, tokenId).send({
 			from: accounts[0],
 		});
@@ -90,7 +96,7 @@ export async function listCoin2(tokenId: number, price: number){
     }
 }
 
-export async function delistCoin2(tokenId: number){
+export async function delistCoin2(tokenId: Number){
     const accounts = await web3MM.eth.requestAccounts();
     console.log("Web3: Calling delistCoin2");
     try {
@@ -137,5 +143,33 @@ export async function transferTokens(_from : string, _to :string, amount: String
 			console.error("gurt error", error);
 			return(false);
 		}
+}
+
+//takes _value in wei
+export async function settle(_from: string, tokenId : Number, _value: Number){
+	console.log("Web3: Calling settle");
+	try {
+		var s = Date.now()/ 1000;
+		const t:TokenData2 = await getTokInfo2(tokenId);
+		if (!(s >= t.maturityDate-24*60*60)){
+			return ("Failed, cannot settle 24 hours outside of maturity date.");
+		}
+		await nftContract.methods.settleToken(tokenId).send({
+			from: _from,
+			value: _value,
+		});
+
+		if (await isListed2(tokenId)){
+			await delistCoin2(tokenId);
+		};
+
+		console.log("Settle success.");
+		return ("Success");
+	} catch (error) {
+		console.error(error);
+		return ("Fail");
+	}
+
+	//add edits such that available tokens are affected by validity
 }
 
