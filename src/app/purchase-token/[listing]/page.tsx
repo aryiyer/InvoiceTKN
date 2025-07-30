@@ -4,7 +4,7 @@
 import {usePathname} from 'next/navigation';
 import {useState, useEffect} from 'react';
 import {isListed2, getTokInfo2, checkConnection, listingPrice, getAccountBalance, ownerOfToken, weiToEth} from '../../blockchain/search';
-import { buyToken } from '@/app/blockchain/write';
+import { buyTokenPayable } from '@/app/blockchain/write';
 import {useTokenStore, TokenData2} from "../../store/dataStore";
 import { useAccountStore } from "../../store/accountStore";
 import {useRouter} from "next/navigation";
@@ -50,7 +50,7 @@ export default function (){
                 setMessage("Cannot purchase your own token!");
             } else {
                 console.log("gurt");
-                await buyToken(tokenId, tokOwner, String(currentAccountInfo?.accountAddress), String(listPrice));
+                await buyTokenPayable(tokenId, tokOwner, String(currentAccountInfo?.accountAddress), Number(listPrice));
                 rout.push("/my-account/");
             }
         }
