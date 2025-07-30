@@ -9,6 +9,7 @@ import { liveValue } from '../blockchain/search';
 import {useRouter} from "next/navigation";
 
 export default function (){
+    const [loading, setLoading] = useState<Boolean>(false);
     const [ownedData, setOwnedData] = useState<Number[]>([]);
     const [success, setSuccess] = useState<boolean>();
     const [recPrice, setRec] = useState<String>("Select a token to see recommended price.");
@@ -31,8 +32,10 @@ export default function (){
     };    
 
     async function listButtonClick(formData: FormData){
+        setLoading(true);
         //Listing takes in ETH and converts to WEI
         const listRes = await listCoin2(Number(formData.get("tokenId")), Number(ethToWei(Number(formData.get("value")))));
+        setLoading(false);
         setSuccess(listRes);
         
         await sleep(3000);
@@ -40,7 +43,7 @@ export default function (){
     }
 
     async function handleChange(event : any){
-        if (event.target.value != "Select a Token..."){
+        if (event.target.value != "Select a Token..."){            
             setRec(await liveValue(Number(event.target.value)));
         };
     };
@@ -56,6 +59,10 @@ export default function (){
         }
         getData();
     }, []);
+
+    if (loading) {
+        <div className={"flex items-center justify-center min-h-screen"}>Loading...</div>
+    }
 
     if (success==null){}
     else if(success){
