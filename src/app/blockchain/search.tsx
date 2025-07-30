@@ -283,6 +283,6 @@ export async function liveValue(tokenId: Number){
 	const endValue = value*(yieldd); //in wei
 	
 	const currValue = (completion*endValue);
-	const eth = Number(weiToEth(currValue+value));
+	const eth = Number(weiToEth(Math.floor(currValue+value)));
 	return(eth.toFixed(8));
 }
