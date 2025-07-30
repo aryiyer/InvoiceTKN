@@ -1,18 +1,6 @@
 .Navbar {
     display: flex;
     flex-direction: row;
-    justify-content: reverse;
-    padding-left: 100px;
     align-items: center;
-    height: 50px;
-}
-
-.NavbarUL {
-    gap: 65px;
-    display: flex;
-    padding: 16px;
-
-}
-.NavbarUL a:hover{
-    font-weight: bold;
+    height: 90px;
 }

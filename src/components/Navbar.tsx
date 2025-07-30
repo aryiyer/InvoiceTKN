@@ -2,62 +2,62 @@
 
 import styles from "./Navbar.module.css";
 import { AccountInfo, useAccountStore } from "../app/store/accountStore";
+import Butt from "./NavButton"
 
 export default function Navbar() {
     const currentAccountInfo = useAccountStore((state) => state.currentAccountInfo);
-    const setAccountInfo = useAccountStore((state) => state.setAccountInfo);
-    //console.log(currentAccountInfo?.accountType);
+    
+    
 
     if (!currentAccountInfo){
         return(
-            <header className = {styles.Navbar + " bg-teal-500"}>
+            <header className = {styles.Navbar + " bg-black/70"}>
                 <ul className = {styles.NavbarUL}>
                 </ul>
             </header>
         );
     } else if (currentAccountInfo.accountType == "minter") {
+        var links = ["/", "/my-account", "/marketplace", "/mint-token", "/settle-token"];
+        var strs = ["Home", "My Account", "Marketplace", "Mint Token", "Settle Token"];        
         return(
-            <header className = {styles.Navbar + " bg-teal-500"}>
-                <ul className = {styles.NavbarUL}>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/my-account">My Account</a></li>
-                    <li><a href="/marketplace">Marketplace</a></li>
-                    <li><a href="/mint-token">Mint Token</a></li>
-                    <li><a href="/settle-token">Settle Token</a></li>
-                </ul>
+            <header className = {styles.Navbar + " bg-black/70"}>
+                <div className={"ml-10 text-white text-4xl font-bold"}>
+                    <a href="/">InvoiceTKN</a>                    
+                </div>
+                <Butt links={links} strs={strs}/>
             </header>
         );
     } else if (currentAccountInfo.accountType == "investor") {
+        var links = ["/", "/my-account", "/marketplace"];
+        var strs = ["Home", "My Account", "Marketplace"];   
         return (
-            <header className = {styles.Navbar + " bg-teal-500"}>
-                <ul className = {styles.NavbarUL}>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/my-account">My Account</a></li>
-                    <li><a href="/marketplace">Marketplace</a></li>
-                </ul>
+            <header className = {styles.Navbar + " bg-black/70"}>
+                <div className={"ml-10 text-white text-4xl font-bold"}>
+                    <a href="/">InvoiceTKN</a>
+                </div>
+                <Butt links={links} strs={strs}/>
             </header>
         );
     } else if (currentAccountInfo.accountType == "owner") {
+        var links = ["/", "/my-account", "/marketplace", "/mint-token", "/settle-token", "/manage-users"];
+        var strs = ["Home", "My Account", "Marketplace", "Mint Token", "Settle Token", "Manage Users"];    
         return (
-            <header className = {styles.Navbar + " bg-teal-500"}>
-                <ul className = {styles.NavbarUL}>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/my-account">My Account</a></li>
-                    <li><a href="/marketplace">Marketplace</a></li>
-                    <li><a href="/mint-token">Mint Token</a></li>                    
-                    <li><a href="/settle-token">Settle Token</a></li>
-                    <li><a href="/manage-users">Manage Users</a></li>
-                </ul>
+            <header className = {styles.Navbar + " bg-black/70"}>
+                <div className={"ml-10 text-white text-4xl font-bold"}>
+                    <a href="/">InvoiceTKN</a>
+                </div>
+                <Butt links={links} strs={strs}/>
             </header>
         );
     } else {
+        var links = ["/", "/my-account", "/marketplace"];
+        var strs = ["Home", "My Account", "Marketplace"];   
         return (
-            <header className = {styles.Navbar + " bg-teal-500"}>
-                <ul className = {styles.NavbarUL}>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/my-account">My Account</a></li>
-                    <li><a href="/marketplace">Marketplace</a></li>
-                </ul>
+            <header className = {styles.Navbar + " bg-black/70"}>
+                <div className={"ml-10 text-white text-4xl font-bold"}>
+                    <a href="/">InvoiceTKN</a>
+                </div>
+                <Butt links={links} strs={strs}/>
             </header>
         );
     }
