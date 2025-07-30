@@ -117,21 +117,36 @@ export async function delistCoin2(tokenId: Number){
 
 //assumes that the user balance has been verified to have sufficient balance
 //_value is in ETH, is converted into WEI for the transfer.
-export async function buyToken(tokenId: number, sellerAcc: string, buyerAcc: string, _value: String){
-	console.log("Web3: Calling buyToken");
+// export async function buyToken(tokenId: number, sellerAcc: string, buyerAcc: string, _value: String){
+// 	console.log("Web3: Calling buyToken");
+// 	try {
+// 		const accounts = await web3MM.eth.requestAccounts();
+// 		const res = await transferTokens(buyerAcc, sellerAcc, _value); //transfers _value in (eth) from buyer to seller wallet.				
+// 		if (res) {
+// 			await marketplaceContract.methods.buyItem(nftAddress, tokenId, buyerAcc).send({
+//             	from: accounts[0],
+//         	});
+// 		}
+// 		console.log("gurt purchased");
+// 	} catch (error) {
+// 		console.error(error);
+// 	}
+// }
+
+export async function buyTokenPayable(tokenId: number, sellerAcc: string, buyerAcc: string, _value: Number) {
+	console.log("Web3: Calling buyTokenPayable");
 	try {
-		const accounts = await web3MM.eth.requestAccounts();
-		const res = await transferTokens(buyerAcc, sellerAcc, _value); //transfers _value in (eth) from buyer to seller wallet.				
-		if (res) {
-			await marketplaceContract.methods.buyItem(nftAddress, tokenId, buyerAcc).send({
-            	from: accounts[0],
-        	});
-		}
+		const accounts = await web3MM.eth.requestAccounts();							
+		await marketplaceContract.methods.buyItemP(nftAddress, tokenId, buyerAcc).send({
+			from: accounts[0],
+			value: _value,
+		});
+		
 		console.log("gurt purchased");
 	} catch (error) {
 		console.error(error);
-	}
-}		
+	}	
+}
 
 export async function transferTokens(_from : string, _to :string, amount: String) {
 		console.log("Web3: calling transferTokens");
