@@ -173,7 +173,7 @@ export async function settle(_from: string, tokenId : Number, _value: Number){
 		var s = Date.now()/ 1000;
 		const t:TokenData2 = await getTokInfo2(tokenId);
 		if (!(s >= t.maturityDate-24*60*60)){
-			return ("Failed, cannot settle 24 hours outside of maturity date.");
+			return ("Failed, cannot settle more than 24 hours before maturity date.");
 		}
 		await nftContract.methods.settleToken(tokenId).send({
 			from: _from,
@@ -188,7 +188,7 @@ export async function settle(_from: string, tokenId : Number, _value: Number){
 		return ("Success");
 	} catch (error) {
 		console.error(error);
-		return ("Fail");
+		return ("Failed.");
 	}
 
 	//add edits such that available tokens are affected by validity
