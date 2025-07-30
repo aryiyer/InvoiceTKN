@@ -17,13 +17,13 @@ export default function (){
     async function mintButtonClick(formData: FormData){
         const name = String(formData.get("name"));
         const _date = new Date(String(formData.get("date")));
-        const currDate = new Date(date);
-        const diff = (Number(_date)-Number(currDate));
-        const days = diff/1000/60/60/24;
+        const currDate = new Date();
+        const diff = (Number(_date)-Number(currDate));    
+        var days = diff/1000/60/60/24;
+        days = Math.ceil(days);        
 
         var value = String(formData.get("value"));
-        var _yield = Number(formData.get("yield"))*100;
-        
+        var _yield = Number(formData.get("yield"))*100;        
         
         await setLoading(true);
         //Minting with value in WEI
@@ -35,14 +35,15 @@ export default function (){
     useEffect(() => {
         async function init() {
             checkConnection(currentAccountInfo, setAccountInfo);
-            const date1 = new Date();
+            var date1 = new Date();
+            date1.setDate(date1.getDate()+1);
             const date = date1.getDate();
             var mon =String(date1.getMonth() + 1);
             if (Number(mon) < 10){
                 mon = "0"+mon;
             }
             const year = date1.getFullYear();
-            const currDate = year+"-"+mon+"-"+date;
+            const currDate = year+"-"+mon+"-"+date;            
             setDate(currDate);
         }
 
@@ -84,16 +85,23 @@ export default function (){
             );
         } else {
             return(
-                <div>
-                    Loading...
-                </div>
+                <div className={"flex items-center justify-center min-h-screen"}>Loading...</div>
             );
         }
     } else {
         return(
-            <div>
-                you don't have acces to this page brah!!!
-            </div>  
+            <div className={"flex flex-col max-w-full mt-20 ml-15 gap-4 items-center"}>
+                <div className={"text-xl font-bold"}>
+                    Only minters can mint tokens.
+                </div>
+
+                <div>
+                    <ul className={"flex flex-row mt-7"}>
+                        <li className={"text-xl font-bold"}>Your Public Address: &nbsp;</li>
+                        <li className={"text-xl text-gray-700"}>{currentAccountInfo?.accountAddress}</li>
+                    </ul>           
+                </div>
+            </div>
         );
     }
 
