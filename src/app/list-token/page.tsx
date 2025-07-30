@@ -7,6 +7,7 @@ import { TokenData2 } from '../store/dataStore';
 import {listCoin2} from '../blockchain/write';
 import { liveValue } from '../blockchain/search';
 import {useRouter} from "next/navigation";
+import OpaqueBox from '@/components/Box';
 
 export default function (){
     const [loading, setLoading] = useState<Boolean>(false);
@@ -61,85 +62,104 @@ export default function (){
     }, []);
 
     if (loading) {
-        <div className={"flex items-center justify-center min-h-screen"}>Loading...</div>
+        <div>
+            <OpaqueBox inside={(<div className={"flex items-center justify-center min-h-screen text-white"}>Loading...</div>)} />
+        </div>
     }
 
     if (success==null){}
     else if(success){
         return(
-            <div className={"flex justify-center mt-15"}>Success! Redirecting to Marketplace...</div>
+            <div>
+                <OpaqueBox inside={(<div className={"flex justify-center text-white"}>Success! Redirecting to Marketplace...</div>)} />
+            </div>
+            
         );
     } else {
         return(
-            <div className={"flex justify-center mt-15"}>Failed. Redirecting to Marketplace...</div>
+            <div>
+                <OpaqueBox inside={(<div className={"flex justify-center text-white"}>Failed. Redirecting to Marketplace...</div>)} />
+            </div>            
         );
     }
 
     if (!currentAccountInfo) {
         return(
-            <div className={"flex justify-center mt-30"}>
-                <button onClick={() => checkConnection(currentAccountInfo, setAccountInfo)} className={"bg-orange-500 hover:bg-orange-700 text-white font-bold py-4 px-8 rounded-full"} >
-                    Connect to MetaMask
-                </button>
-            </div>
-            
+            <div>
+                <OpaqueBox inside={(
+                    <div className={"flex justify-center text-white"}>
+                        <button onClick={() => checkConnection(currentAccountInfo, setAccountInfo)} className={"bg-orange-500 hover:bg-orange-700 text-white font-bold py-4 px-8 rounded-full"} >
+                            Connect to MetaMask
+                        </button>
+                    </div>
+                )} />
+            </div>            
         );
     } else if (!(currentAccountInfo?.accountType == "minter" || currentAccountInfo?.accountType == "investor" || currentAccountInfo?.accountType == "owner")) {
         return(
-            <div className={"flex flex-col max-w-full mt-20 ml-15 gap-4 items-center"}>
-                <div className={"text-xl font-bold"}>
-                    Only approved roles can list tokens.
+            <div>
+                <OpaqueBox inside={(
+                <div className={"flex flex-col max-w-full text-white ml-15 gap-4 items-center"}>
+                    <div className={"text-xl font-bold"}>
+                        Only approved roles can list tokens.
+                    </div>
+                    <div>
+                        <ul className={"flex flex-row mt-7"}>
+                            <li className={"text-xl font-bold"}>Your Public Address: &nbsp;</li>
+                            <li className={"text-xl text-gray-700"}>{currentAccountInfo?.accountAddress}</li>
+                        </ul>           
+                    </div>
                 </div>
-                <div>
-                    <ul className={"flex flex-row mt-7"}>
-                        <li className={"text-xl font-bold"}>Your Public Address: &nbsp;</li>
-                        <li className={"text-xl text-gray-700"}>{currentAccountInfo?.accountAddress}</li>
-                    </ul>           
-                </div>
-            </div>            
+                )} />
+            </div>                        
         );
     } else {
         return(
             <div>
-                <ul className={"flex flex-row mt-20 ml-15 gap-4 items-center"}>
-                    <li className={"text-xl font-bold"}>Your Public Address: </li>
-                    <li className={"text-xl text-gray-700"}>{currentAccountInfo.accountAddress}</li>
-                </ul>
+                <OpaqueBox inside={(
+                    <div className={"text-white"}>
+                        <ul className={"flex flex-row ml-15 gap-4 items-center"}>
+                            <li className={"text-xl font-bold"}>Your Public Address: </li>
+                            <li className={"text-xl text-gray-200"}>{currentAccountInfo.accountAddress}</li>
+                        </ul>
 
-                <form action={listButtonClick} className={"flex flex-col align-center ml-15 mt-20"}>
-                    <div>
-                        <label htmlFor="tokenId">Select Token To List: </label>
-                        <select id="tokenId" name="tokenId" className={"border-1 border-solid border-black rounded-sm"} onChange={handleChange}>
-                            <option>Select a Token...</option>
-                            {ownedData.map((id: Number, i) => {
-                                return(
-                                    <option key={i} className={""} value={Number(id)}>
-                                        #{String(id)}
-                                    </option>)
-                            })}
-                        </select>            
-                    </div>
+                        <form action={listButtonClick} className={"flex flex-col align-center ml-15 mt-20"}>
+                            <div>
+                                <label htmlFor="tokenId" className={"font-bold"}>Select Token To List: &nbsp; </label>
+                                <select id="tokenId" name="tokenId" className={"border-1 border-solid border-white rounded-sm"} onChange={handleChange}>
+                                    <option>Select a Token...</option>
+                                    {ownedData.map((id: Number, i) => {
+                                        return(
+                                            <option key={i} className={""} value={Number(id)}>
+                                                #{String(id)}
+                                            </option>)
+                                    })}
+                                </select>            
+                            </div>
 
-                    <div className={"mt-7"}>   
-                        <div>Recommended Price: &nbsp; {                            
-                                (recPrice)                                                        
-                            }</div>
-                        
-                    </div>
+                            <div className={"mt-7 font-bold"}>   
+                                <div>Recommended Price: &nbsp; {                            
+                                        (recPrice)                                                        
+                                    }</div>
+                                
+                            </div>
 
-                    <div className={"mt-7"}>   
-                        <label htmlFor="value">Listing Price (ETH):   </label>
-                        <input type="number" id="value" name="value" className={"border-1 border-solid border-black rounded-sm"} step="0.000001"></input>
-                    </div>
+                            <div className={"mt-7 font-bold"}>   
+                                <label htmlFor="value">Listing Price (ETH):  &nbsp; </label>
+                                <input type="number" id="value" name="value" className={"border-1 border-solid border-white rounded-sm"} step="0.000001"></input>
+                            </div>
 
-                    <div className={"mt-7"}>
-                        <button type="submit" className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
-                            List!
-                        </button>
+                            <div className={"mt-7"}>
+                                <button type="submit" className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
+                                    List!
+                                </button>
+                            </div>
+                            
+                        </form>
                     </div>
-                     
-                </form>
+                )} />
             </div>
+            
         )
     }
 

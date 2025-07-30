@@ -1,6 +1,6 @@
 .BigBox {
     padding: 9px 10px;
-    background-color: #f2f2f2;
+    background-color: #000000;
     
     width: 90%;
     margin: 12px auto;
@@ -15,10 +15,6 @@
     align-items: center;
     gap: 65px;
     padding: 8px;
-}
-
-.BigBox:hover {
-    background-color: #e6e6e6;
 }
 
 .Header {

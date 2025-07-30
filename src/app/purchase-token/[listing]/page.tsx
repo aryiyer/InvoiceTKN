@@ -8,6 +8,7 @@ import { buyTokenPayable } from '@/app/blockchain/write';
 import {useTokenStore, TokenData2} from "../../store/dataStore";
 import { useAccountStore } from "../../store/accountStore";
 import {useRouter} from "next/navigation";
+import OpaqueBox from '@/components/Box';
 
 declare var window: any;
 
@@ -77,80 +78,103 @@ export default function (){
 
     if (loading){
         return(
-            <div className={"flex items-center justify-center min-h-screen"}>Loading...</div>
+            <div>
+                <OpaqueBox inside={(<div className={"flex items-center justify-center text-white font-bold"}>Loading...</div>)} />
+            </div>
         );
     }
 
     if (!listed){
         return(
-            <div className={"ml-15 mt-20"}>
-                <div className={"text-xl font-bold text-red-500"}>Token is not listed!</div>                       
+            <div>
+                <OpaqueBox inside={(
+                    <div className={"ml-15"}>
+                        <div className={"text-xl font-bold text-red-500"}>Token is not listed!</div>                       
+                    </div>
+                )} />
             </div>
+            
         );
     }
 
 
     if (!currentAccountInfo){
         return(
-            <div className={"flex justify-center mt-30"}>
-                <button onClick={() => checkConnection(currentAccountInfo, setAccountInfo)} className={"bg-orange-500 hover:bg-orange-700 text-white font-bold py-4 px-8 rounded-full"} >
-                    Connect to MetaMask
-                </button>
+
+            <div>
+                <OpaqueBox inside={(
+                    <div className={"flex justify-center"}>
+                        <button onClick={() => checkConnection(currentAccountInfo, setAccountInfo)} className={"bg-orange-500 hover:bg-orange-700 text-white font-bold py-4 px-8 rounded-full"} >
+                            Connect to MetaMask
+                        </button>
+                    </div>
+                )} />
             </div>
+
             
         );
     }
 
     if (!(currentAccountInfo?.accountType == "investor" || currentAccountInfo?.accountType == "owner")) {
         return(
-            <div className={"ml-15 mt-20"}>
-                <div className={"text-xl font-bold text-red-500"}>Invalid User Role!</div>
-                <div className={"text-xl text-red-500"}>Required: investor or owner.</div>
-                <ul className={"flex flex-row gap-4 mt-7 items-center"}>
-                    <li className={"text-xl font-bold"}>Your Public Address: </li>
-                    <li className={"text-xl text-gray-700"}>{currentAccountInfo.accountAddress}</li>
-                </ul>
-                <ul className={"flex flex-row gap-4 mt-7 items-center"}>
-                    <li className={"text-xl font-bold"}>Account Role: </li>
-                    <li className={"text-xl text-gray-700"}>{currentAccountInfo.accountType}</li>
-                </ul>               
+            <div>
+                <OpaqueBox inside={(
+                    <div className={"ml-15"}>
+                        <div className={"text-xl font-bold text-red-500"}>Invalid User Role!</div>
+                        <div className={"text-xl text-red-500"}>Required: investor or owner.</div>
+                        <ul className={"flex flex-row gap-4 mt-7 items-center"}>
+                            <li className={"text-xl text-white font-bold"}>Your Public Address: </li>
+                            <li className={"text-xl text-gray-200"}>{currentAccountInfo.accountAddress}</li>
+                        </ul>
+                        <ul className={"flex flex-row gap-4 mt-7 items-center"}>
+                            <li className={"text-xl text-white font-bold"}>Account Role: </li>
+                            <li className={"text-xl text-gray-200"}>{currentAccountInfo.accountType}</li>
+                        </ul>               
+                    </div>
+                )} />
             </div>
+
         );      
     }
 
     return (
-        <div className={"ml-15"}>
-            <ul className={"flex flex-row mt-20 gap-4 items-center"}>
-                <li className={"text-xl font-bold"}>Your Public Address: </li>
-                <li className={"text-xl text-gray-700"}>{currentAccountInfo.accountAddress}</li>
-            </ul>
+        <div>
+            <OpaqueBox inside={(
+                <div className={"ml-15 text-white"}>
+                    <ul className={"flex flex-row gap-4 items-center"}>
+                        <li className={"text-xl font-bold"}>Your Public Address: </li>
+                        <li className={"text-xl text-gray-200"}>{currentAccountInfo.accountAddress}</li>
+                    </ul>
 
-            <ul className={"flex flex-row mt-10 gap-4 items-center"}>
-                <li className={"text-3xl"}>{token?.name}</li>
-                <li className={"text-xl text-gray-500"}>id: #{token?.tokenId}</li>
-            </ul>
+                    <ul className={"flex flex-row mt-10 gap-4 items-center"}>
+                        <li className={"text-3xl"}>{token?.name}</li>
+                        <li className={"text-xl text-gray-200"}>id: #{token?.tokenId}</li>
+                    </ul>
 
-            <ul className={"flex flex-row mt-10 gap-4"}>
-                <li className={"text-2xl font-bold"}>Token Final Value:</li>
-                <div>
-                    <li className={"text-3xl"}>{weiToEth(Math.floor(Number(token?.value)*(1+Number(token?.yield)/10000)))} ETH</li>
-                    <li className={"text-xl text-gray-500"}>Invoice Value: {weiToEth((Number(token?.value)))} ETH, Yield: {Number(token?.yield)/100}%</li>
+                    <ul className={"flex flex-row mt-10 gap-4"}>
+                        <li className={"text-2xl font-bold"}>Token Final Value:</li>
+                        <div>
+                            <li className={"text-3xl"}>{weiToEth(Math.floor(Number(token?.value)*(1+Number(token?.yield)/10000)))} ETH</li>
+                            <li className={"text-xl text-gray-200"}>Invoice Value: {weiToEth((Number(token?.value)))} ETH, Yield: {Number(token?.yield)/100}%</li>
+                        </div>
+                    </ul>
+
+                    <ul className={"flex flex-row mt-7 gap-4 items-center"}>
+                        <li className={"text-2xl"}>Token Price:</li>
+                        <li className={"text-3xl"}>{weiToEth(Number(listPrice))} ETH</li>
+                    </ul>
+                    
+                    <button className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full mt-10"} onClick={purchaseClicked}>
+                        Purchase
+                    </button>
+
+                    <div className="text-l text-red-500 mt-3">
+                            {errorMessage}
+                    </div>
                 </div>
-            </ul>
-
-            <ul className={"flex flex-row mt-7 gap-4 items-center"}>
-                <li className={"text-2xl"}>Token Price:</li>
-                <li className={"text-3xl"}>{weiToEth(Number(listPrice))} ETH</li>
-            </ul>
-            
-            <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full mt-10"} onClick={purchaseClicked}>
-                Purchase
-            </button>
-
-            <div className="text-l text-red-500 mt-3">
-                    {errorMessage}
-            </div>
+            )} />
         </div>
+        
     );
 
     

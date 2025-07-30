@@ -3,8 +3,9 @@
 import {useAccountStore, AccountInfo} from '../store/accountStore';
 import {useState, useEffect} from 'react';
 import { getTokensOwned2, getMinted2, getTokensListed2, checkConnection } from '../blockchain/search';
+import OpaqueBox from "../../components/Box";
 
-export default function() {
+export default function Dashboard() {
     const [ownedData, setOwnedData] = useState<Number[]>([]);
     const [mintedData, setMintedData] = useState<Number[]>([]);
     const [listedData, setListedData] = useState<Number[]>([]);
@@ -44,57 +45,60 @@ export default function() {
     }     
 
     else {
-        return(
-            <div>
-                <ul className={"flex flex-row mt-20 ml-15 gap-4 items-center"}>
-                    <li className={"text-xl font-bold"}>Your Public Address: </li>
-                    <li className={"text-xl text-gray-700"}>{storedAccountInfo?.accountAddress}</li>
-                </ul>
-                <ul className={"flex flex-row mt-7 ml-15 gap-4 items-center"}>
-                    <li className={"text-xl font-bold"}>Account Role: </li>
-                    <li className={"text-xl text-gray-700"}>{storedAccountInfo?.accountType}</li>
-                </ul>
+        const contents = (
+        <div>
+            <ul className={"flex flex-row ml-15 gap-4 items-center"}>
+                    <li className={"text-xl text-white font-bold"}>Your Public Address: </li>
+                    <li className={"text-xl text-gray-200"}>{storedAccountInfo?.accountAddress}</li>
+            </ul>
+            <ul className={"flex flex-row mt-7 ml-15 gap-4 items-center"}>
+                <li className={"text-xl text-white font-bold"}>Account Role: </li>
+                <li className={"text-xl text-gray-200"}>{storedAccountInfo?.accountType}</li>
+            </ul>
 
-                <ul className={"flex flex-row mt-15"}>
+            <ul className={"flex flex-row mt-15"}>
 
-                    <li>
-                        <ul className={"flex flex-col mt-20 ml-15 gap-4 items-left"}>
-                            <li className={"text-xl font-bold"}>Tokens Owned: </li>
-                            {ownedData.map((id: Number, i) => {
-                                return(
-                                    <li key={i} className={"text-xl text-gray-700"}>
-                                        <a className={"hover:text-black"} href={"/token/"+String(id)}>#{String(id)}</a>
-                                    </li>)
-                            })}
-                        </ul>
-                    </li>
+                <li>
+                    <ul className={"flex flex-col mt-20 ml-15 gap-4 items-left"}>
+                        <li className={"text-xl text-white font-bold"}>Tokens Owned: </li>
+                        {ownedData.map((id: Number, i) => {
+                            return(
+                                <li key={i} className={"text-xl text-gray-200"}>
+                                    <a className={"hover:text-gray-500"} href={"/token/"+String(id)}>#{String(id)}</a>
+                                </li>)
+                        })}
+                    </ul>
+                </li>
 
-                    <li>
-                        <ul className={"flex flex-col mt-20 ml-15 gap-4 items-left"}>
-                            <li className={"text-xl font-bold"}>Tokens Minted: </li>
-                            {mintedData.map((id: Number, i) => {
-                                return(
-                                    <li key={i} className={"text-xl text-gray-700"}>
-                                        <a className={"hover:text-black"} href={"/token/"+String(id)}>#{String(id)}</a>
-                                    </li>)
-                            })}
-                        </ul>
-                    </li>
+                <li>
+                    <ul className={"flex flex-col mt-20 ml-15 gap-4 items-left"}>
+                        <li className={"text-xl text-white font-bold"}>Tokens Minted: </li>
+                        {mintedData.map((id: Number, i) => {
+                            return(
+                                <li key={i} className={"text-xl text-gray-200"}>
+                                    <a className={"hover:text-gray-500"} href={"/token/"+String(id)}>#{String(id)}</a>
+                                </li>)
+                        })}
+                    </ul>
+                </li>
 
-                    <li>
-                        <ul className={"flex flex-col mt-20 ml-15 gap-4 items-left"}>
-                            <li className={"text-xl font-bold"}>Tokens Listed: </li>
-                            {listedData.map((id: Number, i) => {
-                                return(
-                                    <li key={i} className={"text-xl text-gray-700"}>
-                                        <a className={"hover:text-black"} href={"/token/"+String(id)}>#{String(id)}</a>
-                                    </li>)
-                            })}
-                        </ul>
-                    </li>
+                <li>
+                    <ul className={"flex flex-col mt-20 ml-15 gap-4 items-left"}>
+                        <li className={"text-xl text-white font-bold"}>Tokens Listed: </li>
+                        {listedData.map((id: Number, i) => {
+                            return(
+                                <li key={i} className={"text-xl text-gray-200"}>
+                                    <a className={"hover:text-gray-500"} href={"/token/"+String(id)}>#{String(id)}</a>
+                                </li>)
+                        })}
+                    </ul>
+                </li>
 
-                </ul>
-            </div>
-        )
+            </ul>
+        </div>
+        );
+        return (
+            <OpaqueBox inside={contents} />
+            );
     }
 }

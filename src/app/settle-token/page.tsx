@@ -6,6 +6,7 @@ import { checkConnection, getMinted2, getTokInfo2, weiToEth } from '../blockchai
 import { settle } from '../blockchain/write';
 import {useRouter} from "next/navigation";
 import { TokenData2 } from '../store/dataStore';
+import OpaqueBox from '@/components/Box';
 
 export default function() {
     const currentAccountInfo = useAccountStore((state) => state.currentAccountInfo);
@@ -69,20 +70,25 @@ export default function() {
     }
 
     if (!currentAccountInfo) {
-        return(
-            <div className={"flex justify-center mt-30"}>
+        const stuff = (
+            <div className={"flex justify-center"}>
                 <button onClick={() => checkConnection(currentAccountInfo, setAccountInfo)} className={"bg-orange-500 hover:bg-orange-700 text-white font-bold py-4 px-8 rounded-full"} >
                     Connect to MetaMask
                 </button>
+            </div>
+        );
+        return(
+            <div>
+                <OpaqueBox inside={stuff} />
             </div>
             
         );
     }
 
     if ((currentAccountInfo?.accountType != "minter") && (currentAccountInfo?.accountType != "owner")){
-        return(
+        const stuff = (
             <div>
-                <ul className={"flex flex-col mt-15 ml-15"}>
+                <ul className={"flex flex-col ml-15"}>
                     <div className={"font-bold text-2xl text-red-700"}>
                         Only Minters can access this page!
                     </div>
@@ -94,13 +100,19 @@ export default function() {
                 </ul>     
             </div>
         );
-    } else {
+        
         return(
             <div>
-                <form action={handleSettleClick} className={"flex flex-col align-center ml-15 mt-20"}>
+                <OpaqueBox inside={stuff} />
+            </div>
+        );
+    } else {
+        const stuff = (
+            <div>
+                <form action={handleSettleClick} className={"flex flex-col align-center ml-15 text-white"}>
                     <div>
-                        <label htmlFor="tokenId">Select Token To Settle: </label>
-                        <select id="tokenId" name="tokenId" className={"border-1 border-solid border-black rounded-sm"} onChange={handleChange}>
+                        <label htmlFor="tokenId" className={"font-bold text-xl"}>Select Token To Settle: &nbsp; </label>
+                        <select id="tokenId" name="tokenId" className={"border-1 border-solid border-white rounded-sm"} onChange={handleChange}>
                             <option>Select a Token...</option>
                             {mintedData.map((token: TokenData2, i) => {
                                 return(
@@ -124,7 +136,7 @@ export default function() {
                     </div>
 
                     <div className={"mt-7"}>
-                        <button type="submit" className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
+                        <button type="submit" className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
                             Settle!
                         </button>
                     </div>
@@ -133,6 +145,11 @@ export default function() {
                             {message}
                     </div>                     
                 </form>
+            </div>
+        );
+        return(
+            <div>
+                <OpaqueBox inside={stuff} />
             </div>
         );
     }   

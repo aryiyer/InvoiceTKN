@@ -81,7 +81,7 @@ export default function ListingCard() {
                 const url = "/token/" + t.token.tokenId;
                 const MoreInfoBox = (
                 <div>
-                    <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full"} onClick={() => handleClick(url, t.token)}>
+                    <button className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full"} onClick={() => handleClick(url, t.token)}>
                         More Info
                     </button>
                 </div>);

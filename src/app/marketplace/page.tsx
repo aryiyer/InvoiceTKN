@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import {useState, useEffect} from 'react';
 import { useAccountStore, AccountInfo } from "../store/accountStore";
 import { checkConnection } from "../blockchain/search";
+import OpaqueBox from "@/components/Box";
 
 export default function marketPlace() {
     const rout = useRouter();
@@ -23,37 +24,51 @@ export default function marketPlace() {
 
     //if no account found in state
     if (!currentAccountInfo){
-        return(
+        const stuff = (
             <div className={"flex justify-center mt-30"}>
                 <button onClick={() => checkConnection} className={"bg-orange-500 hover:bg-orange-700 text-white font-bold py-4 px-8 rounded-full"} >
                     Connect to MetaMask
                 </button>
             </div>
-            
+        );
+        return(
+            <div>
+                <OpaqueBox inside={stuff} />
+            </div>            
         );        
     }
     if (!(currentAccountInfo?.accountType == "minter" || currentAccountInfo?.accountType == "investor" || currentAccountInfo?.accountType == "owner")) {
-        return (<main>
+        const stuff = (
             <div className = {"flex flex-col mt-7"}>
                 <ListingCard/>
             </div>
-        </main>);        
-    } else {
+        );
+        
         return (
-            <main>
+            <div>
+                <OpaqueBox inside={stuff} />
+            </div>
+        );        
+    } else {
+        const stuff = (
+            <div>
                 <div className={"flex flex-row align-center justify-evenly mt-7"}>
-                    <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-full"}onClick={() => handleClick("/list-token/")}>
+                    <button className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-xl text-white font-bold py-4 px-8 rounded-full"}onClick={() => handleClick("/list-token/")}>
                         List Token
                     </button>
-                    <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-full"} onClick={() => handleClick("/delist-token/")}>
+                    <button className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-xl text-white font-bold py-4 px-8 rounded-full"} onClick={() => handleClick("/delist-token/")}>
                         Delist Token
                     </button>
                 </div>
-                <div className = {"flex flex-col mt-7"}>
+                <div className = {"flex flex-col text-white mt-7"}>
                     <ListingCard/>
                 </div>
-            </main>
-            
+            </div>
+        );
+        return (
+            <div>
+                <OpaqueBox inside={stuff}/>
+            </div>            
         )
     }
 }

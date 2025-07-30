@@ -5,6 +5,7 @@ import {usePathname, useRouter} from 'next/navigation';
 import {useTokenStore} from "../../store/dataStore";
 import {TokenData2} from "../../store/dataStore";
 import {getTokInfo2, isListed2, listingPrice, weiToEth} from "../../blockchain/search";
+import OpaqueBox from '@/components/Box';
 
 const options = {
   weekday: "long",
@@ -74,14 +75,20 @@ export default function DynamicRoute(props: any){
     }, []);
     
     if (loading) {
+        const stuff = (<div className={"flex items-center justify-center text-white font-bold"}>Loading...</div>);
         return(
-            <div className={"flex items-center justify-center min-h-screen"}>Loading...</div>
+            <div>
+                <OpaqueBox inside={stuff}/>
+            </div>
         );
     }
 
     if (haveError) {
+        const stuff = (<div className={"flex items-center justify-center font-bold text-red-500"}>Error!</div>);
         return(
-            <div>Error brah!</div>
+            <div>
+                <OpaqueBox inside={stuff} />
+            </div>
         );
     }
 
@@ -102,20 +109,19 @@ export default function DynamicRoute(props: any){
             );        
         }
 
-
-        return (
-        <div>
+        const stuff = (
+            <div className="text-white">
             <ul className={"flex flex-row items-center justify-evenly"}>
                 <li>
-                    <div className={"mt-30"}>
+                    <div className={""}>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-3xl"}>{token?.name}</li>
-                            <li className={"text-xl text-gray-500"}>id: #{token?.tokenId}</li>
+                            <li className={"text-xl text-gray-200"}>id: #{token?.tokenId}</li>
                         </ul>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Invoice Value: </li>
                             <li className={"text-3xl"}>{weiToEth(Number(token?.value))} ETH</li>
-                            <li className={"text-xl text-gray-500"}>{Number(token?.yield)/100}%</li>
+                            <li className={"text-xl text-gray-200"}>{Number(token?.yield)/100}%</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
@@ -125,17 +131,17 @@ export default function DynamicRoute(props: any){
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Minted by: </li>
-                            <li className={"text-xl text-gray-700"}>{token?.minter}</li>
+                            <li className={"text-xl text-gray-200"}>{token?.minter}</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Minted Date: </li>
-                            <li className={"text-xl text-gray-700"}>{(new Date(Number(token?.mintedDate)*1000)).toLocaleDateString(undefined, options)}</li>
+                            <li className={"text-xl text-gray-200"}>{(new Date(Number(token?.mintedDate)*1000)).toLocaleDateString(undefined, options)}</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Maturity Date: </li>
-                            <li className={"text-xl text-gray-700"}>{(new Date(Number(token?.maturityDate)*1000)).toLocaleDateString(undefined, options)}</li>
+                            <li className={"text-xl text-gray-200"}>{(new Date(Number(token?.maturityDate)*1000)).toLocaleDateString(undefined, options)}</li>
                         </ul>
 
                         {validBlock}
@@ -144,12 +150,19 @@ export default function DynamicRoute(props: any){
                 </li>
                 <li>
                     <div className={"mt-30"}>
-                        <button className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-full"} onClick={() => handleClick(("/purchase-token/"+String(tokenId)), token)}>
+                        <button className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-full"} onClick={() => handleClick(("/purchase-token/"+String(tokenId)), token)}>
                             Purchase
                         </button>
                     </div>                    
                 </li>
             </ul>
+        </div>
+        );
+
+
+        return (
+        <div>
+            <OpaqueBox inside={stuff} />
         </div>        
     );
     } else {
@@ -169,33 +182,33 @@ export default function DynamicRoute(props: any){
             );        
         }
 
-        return (
-        <div>
+        const stuff = (
+            <div className={"text-white"}>
             <ul className={"flex flex-row items-center justify-evenly"}>
                 <li>
-                    <div className={"mt-30"}>
+                    <div className={""}>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-3xl"}>{token?.name}</li>
-                            <li className={"text-xl text-gray-500"}>id: #{token?.tokenId}</li>
+                            <li className={"text-xl text-gray-200"}>id: #{token?.tokenId}</li>
                         </ul>
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-3xl"}>{weiToEth(Number(token?.value))} ETH</li>
-                            <li className={"text-xl text-gray-500"}>{Number(token?.yield)/100}%</li>
+                            <li className={"text-xl text-gray-200"}>{Number(token?.yield)/100}%</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Minted by: </li>
-                            <li className={"text-xl text-gray-700"}>{token?.minter}</li>
+                            <li className={"text-xl text-gray-200"}>{token?.minter}</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Minted Date: </li>
-                            <li className={"text-xl text-gray-700"}>{(new Date(Number(token?.mintedDate)*1000)).toLocaleDateString(undefined, options)}</li>
+                            <li className={"text-xl text-gray-200"}>{(new Date(Number(token?.mintedDate)*1000)).toLocaleDateString(undefined, options)}</li>
                         </ul>
 
                         <ul className={"flex flex-row mt-6 gap-4 items-center"}>
                             <li className={"text-xl font-bold"}>Maturity Date: </li>
-                            <li className={"text-xl text-gray-700"}>{(new Date(Number(token?.maturityDate)*1000)).toLocaleDateString(undefined, options)}</li>
+                            <li className={"text-xl text-gray-200"}>{(new Date(Number(token?.maturityDate)*1000)).toLocaleDateString(undefined, options)}</li>
                         </ul>
                     </div>
 
@@ -204,12 +217,19 @@ export default function DynamicRoute(props: any){
                 </li>
                 <li>
                     <div className={"mt-30"}>
-                        <button className={"bg-gray-500 text-white font-bold py-4 px-8 rounded-full"} >
+                        <button className={"border-1 border-solid bg-black/30 text-white font-bold py-4 px-8 rounded-full"} >
                             Unlisted Token
                         </button>
                     </div>                    
                 </li>
             </ul>
+        </div>
+        );
+
+        return (
+        
+        <div>
+            <OpaqueBox inside={stuff} />
         </div>      
      );
     }
