@@ -66,7 +66,9 @@ export default function DynamicRoute(props: any){
                 setValid(storedToken.valid);                         
                 setLoading(false);
             }
-            setPrice(weiToEth(await listingPrice(tokenId)));
+            if (listed){
+                setPrice(weiToEth(await listingPrice(tokenId)));
+            }
         }
         fetchData();
     }, []);
