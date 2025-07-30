@@ -3,6 +3,7 @@
 import { getMMAccounts, checkConnection } from './blockchain/search';
 import {useState, useEffect} from 'react';
 import { useAccountStore, AccountInfo } from './store/accountStore';
+import OpaqueBox from '@/components/Box';
 
 export default function Home() {
   const setAccountInfo = useAccountStore((state) => state.setAccountInfo);
@@ -23,11 +24,28 @@ export default function Home() {
   } else {
     return(
       <div>
-        <p>{currentAccountInfo.accountType} view!!</p>
-        <p>Account Address: {currentAccountInfo.accountAddress}</p>
-        <p>Account Type: {currentAccountInfo.accountType}</p>
+        <div className={"text-7xl text-white mt-[7%] ml-[5%]"}>
+          Tokenize Real World Invoices into NFTs.
+        </div>
+
+
+        <div className={"bg-black/50 pt-12 pb-12 mt-10 w-[80%] ml-[5%] rounded-xl"}>
+            <div className={"flex flex-row text-5xl pl-[5%] "}>
+              <div className={"text-teal-600"}>
+                On-chain. &nbsp;
+              </div>
+              <div className={"text-teal-500"}>
+                Permissioned. &nbsp;
+              </div>
+              <div className={"text-teal-400"}>
+                Audited.
+              </div>
+                
+            </div>
+        </div>
+
       </div>
-    )
+    );
   }
 
 }
