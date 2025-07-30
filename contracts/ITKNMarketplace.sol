@@ -67,16 +67,31 @@ contract ITKNMarketplace {
     }
 
     //Buy Item
-    function buyItem(IERC721 nftAddress, uint256 _tokenId, address _to) external {
-        //Assume that buyer has already been checked to have balance for the transaction
+    // function buyItem(IERC721 nftAddress, uint256 _tokenId, address _to) external {
+    //     //Assume that buyer has already been checked to have balance for the transaction
         
+    //     //check that token is listed
+    //     require(listedTokens[_tokenId].listed, "Marketplace buyItem: token is not listed!");
+
+    //     address tokenOwner = nftAddress.ownerOf(_tokenId); 
+    //     require(nftAddress.ownerOf(_tokenId) != _to, "Cannot buy a token that you own.");
+    //     nftAddress.safeTransferFrom(tokenOwner, _to, _tokenId);
+
+    //     delistItem(nftAddress, _tokenId);
+    // }
+
+    function buyItemP(IERC721 nftAddress, uint256 _tokenId, address _to) external payable {
         //check that token is listed
         require(listedTokens[_tokenId].listed, "Marketplace buyItem: token is not listed!");
 
+        //check that msg.value is enough for listingPrice of tokenId
+        require(msg.value == listedTokens[_tokenId].price, "Transaction value does not meet listing price.");
+
         address tokenOwner = nftAddress.ownerOf(_tokenId); 
         require(nftAddress.ownerOf(_tokenId) != _to, "Cannot buy a token that you own.");
+        (bool success,) = nftAddress.ownerOf(_tokenId).call{value: msg.value}("");
+        require(success, "Failed to transfer amount");
         nftAddress.safeTransferFrom(tokenOwner, _to, _tokenId);
-
         delistItem(nftAddress, _tokenId);
     }
 
@@ -100,7 +115,7 @@ contract ITKNMarketplace {
 
     //get listing price in WEI
     function getListingPrice(uint256 _tokenId) public view returns (uint256) {
-        require(listedTokens[_tokenId].listed, "Marketplace buyItem: token is not listed!");
+        require(listedTokens[_tokenId].listed, "Marketplace getListingPrice: token is not listed!");
         return listedTokens[_tokenId].price;
     }
 

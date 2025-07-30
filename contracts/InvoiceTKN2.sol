@@ -62,7 +62,6 @@ contract InvoiceTKN2 is ERC721Enumerable{
         _nextTokenId ++;
     }
 
-
     /* ROLE FUNCTIONS */
     function onboardUser(address newUser, string calldata role) public {
         require(msg.sender == owner, "Only the contract owner can onboard new users.");
