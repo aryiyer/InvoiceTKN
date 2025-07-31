@@ -24,7 +24,7 @@ export default function Home() {
   } else {
     return(
       <div>
-        <div className={"text-7xl text-white mt-[7%] ml-[5%]"}>
+        <div className={"text-6xl text-white mt-[7%] ml-[5%]"}>
           Tokenize Real World Invoices into NFTs.
         </div>
 
