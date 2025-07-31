@@ -286,3 +286,13 @@ export async function liveValue(tokenId: Number){
 	const eth = Number(weiToEth(Math.floor(currValue+value)));
 	return(eth.toFixed(8));
 }
+
+export async function totalValue(tokenId: Number){
+	console.log("Web3: Calling total value");
+	try {
+		const res = await nftContract.methods.settleAmount(tokenId).call();
+		return res;
+	} catch (error) {
+		console.error(error);
+	}
+}
