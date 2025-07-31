@@ -639,6 +639,25 @@ export const nft_abi = [
 				"type": "uint256"
 			}
 		],
+		"name": "settleAmount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "tokenId",
+				"type": "uint256"
+			}
+		],
 		"name": "settleToken",
 		"outputs": [],
 		"stateMutability": "payable",
@@ -781,29 +800,6 @@ export const marketplace_abi = [
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "contract IERC721",
-				"name": "nftAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_tokenId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_to",
-				"type": "address"
-			}
-		],
-		"name": "buyItem",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"inputs": [
@@ -987,9 +983,9 @@ export const marketplace_abi = [
 ];
 
 
-//0x653cc37a98c503e18611eb79b53db9769b930837
-export const nftAddress = "0x72fccf12881bb0ca5cc2cbb3dd28ff13138a02eb";
+//0x72fccf12881bb0ca5cc2cbb3dd28ff13138a02eb
+export const nftAddress = "0xcb0fc1fcdb693c16f4e6b8732372140040d984bc";
 
-//0xd27fbcd5ad8924e59d54411f5390493bea0a5b2a
-export const marketplaceAddress = "0x79f0a93ce2fac54e5b6c794ff0d5c095f2e4b4d7";
+//0x79f0a93ce2fac54e5b6c794ff0d5c095f2e4b4d7
+export const marketplaceAddress = "0x243d29efc55c34b24741c8f524f709f670109fc7";
 
