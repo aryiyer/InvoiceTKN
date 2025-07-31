@@ -52,29 +52,28 @@ export default function (){
         init();
     }, [])
 
-    if (currentAccountInfo?.accountType == "minter" || currentAccountInfo?.accountType == "owner"){
-        if (!loading){
-            const stuff = (
+    if (currentAccountInfo?.accountType == "minter" || currentAccountInfo?.accountType == "owner"){   
+            const stuff = (              
                 <div className={"text-white font-bold border-white"}>
                     <form action={mintButtonClick} className={"flex flex-col align-center ml-15"}>
                         <div className={"mt-7"}>   
                             <label htmlFor="name">Name of Token: &nbsp; </label>
-                            <input type="text" id="name" name="name" className={"border-1 border-solid rounded-sm"}></input>
+                            <input type="text" id="name" name="name" className={"border-1 border-solid rounded-sm bg-gray-500/30"}></input>
                         </div>
 
                         <div className={"mt-7"}>   
                             <label htmlFor="date">Maturity Date: &nbsp; </label>
-                            <input type="date" id="date" name="date" placeholder={date} min={date}/>
+                            <input className={"font-normal border-1 border-solid rounded-sm bg-gray-500/30"} type="date" id="date" name="date" placeholder={date} min={date}/>
                         </div>
 
                         <div className={"mt-7"}>   
                             <label htmlFor="value">Value of Invoice (ETH): &nbsp; </label>
-                            <input type="number" id="value" name="value" className={"border-1 border-solid rounded-sm"} min="0" step="0.0001"></input>
+                            <input type="number" id="value" name="value" className={"border-1 border-solid rounded-sm bg-gray-500/30"} min="0" step="0.0001"></input>
                         </div>
 
                         <div className={"mt-7"}>   
                             <label htmlFor="yield">Yield: &nbsp; </label>
-                            <input type="number" id="yield" name="yield" step="0.01" className={"border-1 border-solid rounded-sm"} min="0" max="100"></input>&nbsp;%
+                            <input type="number" id="yield" name="yield" step="0.01" className={"border-1 border-solid rounded-sm bg-gray-500/30"} min="0" max="100"></input>&nbsp;%
                         </div>            
 
                         <div className={"mt-7"}>
@@ -87,14 +86,9 @@ export default function (){
             );
             return(
                 <div>
-                    <OpaqueBox inside={stuff} />
+                   { loading ? <OpaqueBox inside={(<div>Loading...</div>)} /> : <OpaqueBox inside={stuff} /> }                                                                                           
                 </div>
-            );
-        } else {
-            return(
-                <div className={"flex items-center justify-center min-h-screen text-white"}>Loading...</div>
-            );
-        }
+            );       
     } else {
         const stuff = (
             <div className={"flex flex-col max-w-full gap-4 items-center"}>

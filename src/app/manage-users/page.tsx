@@ -4,6 +4,7 @@ import {useState, useEffect} from 'react';
 import { useAccountStore } from '../store/accountStore';
 import { checkConnection } from '../blockchain/search';
 import {addUser, changeUserRole, deleteUser} from '../blockchain/write';
+import OpaqueBox from '@/components/Box';
 
 export default function() {
     const [addMessage, setAddMessage] = useState<String>("");
@@ -50,51 +51,56 @@ export default function() {
 
     if (currentAccountInfo?.accountType != "owner") {
         return(
-            <div className={"flex flex-col max-w-full mt-20 ml-15 gap-4 items-center"}>
-                <div className={"text-xl font-bold"}>
-                    Only owners of the contract can manage users.
-                </div>
+            <div>
+                <OpaqueBox inside = {(
+                    <div className={"flex flex-col max-w-full ml-15 gap-4 items-center text-white"}>
+                        <div className={"text-xl font-bold"}>
+                            Only owners of the contract can manage users.
+                        </div>
 
-                <div>
-                    <ul className={"flex flex-row mt-7"}>
-                        <li className={"text-xl font-bold"}>Your Public Address: &nbsp;</li>
-                        <li className={"text-xl text-gray-700"}>{currentAccountInfo?.accountAddress}</li>
-                    </ul>           
-                </div>
+                        <div>
+                            <ul className={"flex flex-row mt-7"}>
+                                <li className={"text-xl font-bold"}>Your Public Address: &nbsp;</li>
+                                <li className={"text-xl text-gray-200"}>{currentAccountInfo?.accountAddress}</li>
+                            </ul>           
+                        </div>
+                    </div>  
+                )} />
             </div>
         );
     } else {
        return(
-            <div className={"flex flex-col max-w-full mt-20 gap-4 items-center"}>
+        <div>
+            <OpaqueBox inside = {(
+            <div className={"flex flex-col max-w-full gap-4 items-center text-white pl-[5%] pr-[5%]"}>
                 <div>
                     <ul className={"flex flex-row mt-7"}>
                         <li className={"text-xl font-bold"}>Welcome, &nbsp;</li>
-                        <li className={"text-xl text-gray-700"}>{currentAccountInfo?.accountAddress}</li>
+                        <li className={"text-xl text-gray-200"}>{currentAccountInfo?.accountAddress}</li>
                     </ul>
                     <ul className={"flex flex-row mt-5"}>
                         <li className={"text-xl font-bold"}>Role: &nbsp;</li>
-                        <li className={"text-xl text-gray-700"}>{currentAccountInfo?.accountType}</li>
+                        <li className={"text-xl text-gray-200"}>{currentAccountInfo?.accountType}</li>
                     </ul>               
                 </div>
 
 
-                <div className={"flex flex-row max-w-full mt-20 gap-x-6"}>
-                    <form action={addUserClicked} className={"flex flex-col align-center mt-20"}>
-                        <div className={"flex flex-col align-center"}>
-                            <div>
+                <div className={"flex flex-row max-w-full mt-20 gap-x-35"}>
+                    <form action={addUserClicked} className={"flex flex-col align-center mt-15"}>
+                        <div className={"flex flex-col items-center align-center"}>
+                            <div className={"flex flex-col"}>
                                 <label htmlFor="address">Enter User Address: </label>
-                                <input type="text" id="address" name="address" className={"border-1 border-solid border-black rounded-sm"}></input>
-                            </div>
-                            <div className={"mt-7"}>
-                                <label htmlFor="role">Enter User Role: </label>
-                                <select id="role" name="role" className={"border-1 border-solid border-black rounded-sm"}>
+                                <input type="text" id="address" name="address" className={"border-1 border-solid border-white rounded-sm bg-gray-500/30"}></input>
+                            
+                                <label className={"mt-7"} htmlFor="role">Enter User Role: </label>
+                                <select id="role" name="role" className={"border-1 border-solid border-white rounded-sm bg-gray-500/30"}>
                                     <option>Minter</option>
                                     <option>Investor</option>
                                     <option>Owner</option>
                                 </select>    
                             </div>         
                             <div className={"mt-7"}>
-                                <button type="submit" className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
+                                <button type="submit" className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
                                 Add User
                                 </button>
                             </div>
@@ -104,22 +110,21 @@ export default function() {
                         </div>
                     </form>
 
-                    <form action={changeClicked} className={"flex flex-col align-center ml-15 mt-20"}>
-                        <div className={"flex flex-col align-center"}>
-                            <div>
+                    <form action={changeClicked} className={"flex flex-col align-center mt-15"}>
+                        <div className={"flex flex-col items-left align-center"}>
+                            <div className={"flex flex-col"}>
                                 <label htmlFor="address">Enter User Address: </label>
-                                <input type="text" id="address" name="address" className={"border-1 border-solid border-black rounded-sm"}></input>
-                            </div>
-                            <div className={"mt-7"}>
-                                <label htmlFor="role">Enter New Role: </label>
-                                <select id="role" name="role" className={"border-1 border-solid border-black rounded-sm"}>
+                                <input type="text" id="address" name="address" className={"border-1 border-solid border-white rounded-sm bg-gray-500/30"}></input>
+                            
+                                <label className={"mt-7"} htmlFor="role">Enter New Role: </label>
+                                <select id="role" name="role" className={"border-1 border-solid border-white rounded-sm bg-gray-500/30"}>
                                     <option>Minter</option>
                                     <option>Investor</option>
                                     <option>Owner</option>
                                 </select>    
                             </div>         
                             <div className={"mt-7"}>
-                                <button type="submit" className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
+                                <button type="submit" className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
                                 Change User Role
                                 </button>
                             </div>
@@ -130,15 +135,14 @@ export default function() {
                         </div>
                     </form>
 
-                    <form action={deleteClicked} className={"flex flex-col align-center ml-15 mt-20"}>
-                        <div className={"flex flex-col align-center"}>
-                            <div>
+                    <form action={deleteClicked} className={"flex flex-col align-center mt-15"}>
+                        <div className={"flex flex-col items-left align-center"}>
+                            <div className={"flex flex-col"}>
+                            
                                 <label htmlFor="address">Enter User Address: </label>
-                                <input type="text" id="address" name="address" className={"border-1 border-solid border-black rounded-sm"}></input>
-                            </div>
-     
-                            <div className={"mt-7"}>
-                                <button type="submit" className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
+                                <input type="text" id="address" name="address" className={"border-1 border-solid border-white rounded-sm bg-gray-500/30"}></input>
+                                
+                                <button type="submit" className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full mt-[57%]"} >
                                 Delete User
                                 </button>
                             </div>
@@ -150,6 +154,8 @@ export default function() {
                     </form>
                 </div>
             </div>
+            )} />
+        </div>
         ); 
     }
 }

@@ -58,18 +58,34 @@ export default function ListingCard() {
         <div className={"flex items-center justify-center min-h-screen"}>Loading...</div>
     }
 
+    var firstItem;
+    if(data.length == 0){
+        firstItem=(
+        <div className={"mt-7"}>
+            There are no items listed.
+        </div>
+        );
+    } else {
+        firstItem = (
+            <div></div>
+        );
+    }
 
     return (
         <>
             <div className={styles.Header}>
-                <ul>
+                <div className={"text-5xl font-bold"}>
+                    Marketplace
+                </div>
+                <ul className={"mt-7"}>
                     <li>Name</li>
                     <li>Invoice Value</li>                            
                     <li>Yield</li>
                     <li>Token Price</li>
                     <li>Maturity Date</li>                            
                     
-                </ul>  
+                </ul>
+                {firstItem}  
             </div>
 
             {data.map(function(t, i){

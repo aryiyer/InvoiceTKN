@@ -126,7 +126,7 @@ export default function (){
                         <form action={listButtonClick} className={"flex flex-col align-center ml-15 mt-20"}>
                             <div>
                                 <label htmlFor="tokenId" className={"font-bold"}>Select Token To List: &nbsp; </label>
-                                <select id="tokenId" name="tokenId" className={"border-1 border-solid border-white rounded-sm"} onChange={handleChange}>
+                                <select id="tokenId" name="tokenId" className={"border-1 border-solid border-white rounded-sm bg-gray-500/30"} onChange={handleChange}>
                                     <option>Select a Token...</option>
                                     {ownedData.map((id: Number, i) => {
                                         return(
@@ -146,7 +146,7 @@ export default function (){
 
                             <div className={"mt-7 font-bold"}>   
                                 <label htmlFor="value">Listing Price (ETH):  &nbsp; </label>
-                                <input type="number" id="value" name="value" className={"border-1 border-solid border-white rounded-sm"} step="0.000001"></input>
+                                <input type="number" id="value" name="value" className={"border-1 border-solid border-white rounded-sm bg-gray-500/30"} step="0.000001"></input>
                             </div>
 
                             <div className={"mt-7"}>

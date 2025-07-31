@@ -3,7 +3,7 @@
 
 import {usePathname} from 'next/navigation';
 import {useState, useEffect} from 'react';
-import {isListed2, getTokInfo2, checkConnection, listingPrice, getAccountBalance, ownerOfToken, weiToEth} from '../../blockchain/search';
+import {isListed2, getTokInfo2, checkConnection, listingPrice, getAccountBalance, ownerOfToken, weiToEth, totalValue} from '../../blockchain/search';
 import { buyTokenPayable } from '@/app/blockchain/write';
 import {useTokenStore, TokenData2} from "../../store/dataStore";
 import { useAccountStore } from "../../store/accountStore";
@@ -18,6 +18,7 @@ export default function (){
     const [listPrice, setListPrice] = useState(); //listPrice in wei
     const [errorMessage, setMessage] = useState("");
     const [token, setToken] = useState<TokenData2 | null>(null);
+    const [value, setValue] = useState<Number>();
     const rout = useRouter();
 
     //retrieve account info from store
@@ -70,6 +71,7 @@ export default function (){
             if (isListed){
                 setListPrice(await listingPrice(tokenId));
             }
+            setValue(await totalValue(tokenId));
             setLoading(false);
         }
         init();
@@ -154,8 +156,8 @@ export default function (){
                     <ul className={"flex flex-row mt-10 gap-4"}>
                         <li className={"text-2xl font-bold"}>Token Final Value:</li>
                         <div>
-                            <li className={"text-3xl"}>{weiToEth(Math.floor(Number(token?.value)*(1+Number(token?.yield)/10000)))} ETH</li>
-                            <li className={"text-xl text-gray-200"}>Invoice Value: {weiToEth((Number(token?.value)))} ETH, Yield: {Number(token?.yield)/100}%</li>
+                            <li className={"text-3xl"}>{weiToEth(Number(value))} ETH</li>
+                            <li className={"text-xl text-gray-200"}>Invoice Value: {weiToEth((Number(token?.value)))} ETH, Yield: {Number(token?.yield)/100}% (late fees may apply)</li>
                         </div>
                     </ul>
 

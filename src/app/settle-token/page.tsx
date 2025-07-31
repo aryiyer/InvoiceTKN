@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAccountStore, AccountInfo } from '../store/accountStore';
-import { checkConnection, getMinted2, getTokInfo2, weiToEth } from '../blockchain/search';
+import { checkConnection, getMinted2, getTokInfo2, totalValue, weiToEth } from '../blockchain/search';
 import { settle } from '../blockchain/write';
 import {useRouter} from "next/navigation";
 import { TokenData2 } from '../store/dataStore';
@@ -20,15 +20,13 @@ export default function() {
     async function handleChange(event : any){
         //set settlePrice to the correct value given by event.target.value
         if (event.target.value != "Select a Token..."){
-            const t = await getTokInfo2(event.target.value);
-            const value = t.value;
-	        const yieldd = t.yield/10000; //decimal
-	        const endValue = Number(t.value+value*(yieldd)); //in eth
-            setSettle(endValue);
+            const alt = await totalValue(event.target.value);
+            setSettle(alt);
         };        
     }
 
     async function handleSettleClick(formData : FormData){
+        setMessage("");
         setLoading(true);
         console.log(String(currentAccountInfo?.accountAddress), Number(formData.get("tokenId")), settlePrice);
         const res = await settle(String(currentAccountInfo?.accountAddress), Number(formData.get("tokenId")), settlePrice);
@@ -112,7 +110,7 @@ export default function() {
                 <form action={handleSettleClick} className={"flex flex-col align-center ml-15 text-white"}>
                     <div>
                         <label htmlFor="tokenId" className={"font-bold text-xl"}>Select Token To Settle: &nbsp; </label>
-                        <select id="tokenId" name="tokenId" className={"border-1 border-solid border-white rounded-sm"} onChange={handleChange}>
+                        <select id="tokenId" name="tokenId" className={"border-1 border-solid border-white rounded-sm bg-gray-500/30"} onChange={handleChange}>
                             <option>Select a Token...</option>
                             {mintedData.map((token: TokenData2, i) => {
                                 return(

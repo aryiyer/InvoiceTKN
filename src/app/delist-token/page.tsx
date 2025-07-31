@@ -5,6 +5,7 @@ import { getTokensOwned2, getTokensListed2, checkConnection } from '../blockchai
 import { useAccountStore } from '../store/accountStore';
 import {delistCoin2} from '../blockchain/write';
 import {useRouter} from "next/navigation";
+import OpaqueBox from '@/components/Box';
 
 export default function (){
     const [ownedData, setOwnedData] = useState<Number[]>([]);
@@ -48,56 +49,67 @@ export default function (){
 
     if (!currentAccountInfo) {
         return(
-            <div className={"flex justify-center mt-30"}>
-                <button onClick={() => checkConnection(currentAccountInfo, setAccountInfo)} className={"bg-orange-500 hover:bg-orange-700 text-white font-bold py-4 px-8 rounded-full"} >
-                    Connect to MetaMask
-                </button>
-            </div>
-            
+            <div className={"text-white"}>
+                <OpaqueBox inside={(
+                    <div className={"flex justify-center"}>
+                        <button onClick={() => checkConnection(currentAccountInfo, setAccountInfo)} className={"bg-orange-500 hover:bg-orange-700 text-white font-bold py-4 px-8 rounded-full"} >
+                            Connect to MetaMask
+                        </button>
+                    </div>
+                )} />
+            </div>            
         );
     } else if (!(currentAccountInfo?.accountType == "minter" || currentAccountInfo?.accountType == "investor" || currentAccountInfo?.accountType == "owner")) {
         return(
-            <div className={"flex flex-col max-w-full mt-20 ml-15 gap-4 items-center"}>
-                <div className={"text-xl font-bold"}>
-                    Only approved roles can delist tokens.
-                </div>
-                <div>
-                    <ul className={"flex flex-row mt-7"}>
-                        <li className={"text-xl font-bold"}>Your Public Address: &nbsp;</li>
-                        <li className={"text-xl text-gray-700"}>{currentAccountInfo?.accountAddress}</li>
-                    </ul>           
-                </div>
-            </div>            
+            <div className={"text-white"}>
+                <OpaqueBox inside={(
+                    <div className={"flex flex-col max-w-full ml-15 gap-4 items-center"}>
+                        <div className={"text-xl font-bold"}>
+                            Only approved roles can delist tokens.
+                        </div>
+                        <div>
+                            <ul className={"flex flex-row mt-7"}>
+                                <li className={"text-xl font-bold"}>Your Public Address: &nbsp;</li>
+                                <li className={"text-xl text-gray-200"}>{currentAccountInfo?.accountAddress}</li>
+                            </ul>           
+                        </div>
+                    </div>     
+                )} />
+            </div>
+                   
         );
     } else {
         return(
-            <div>
-                <ul className={"flex flex-row mt-20 ml-15 gap-4 items-center"}>
-                    <li className={"text-xl font-bold"}>Your Public Address: </li>
-                    <li className={"text-xl text-gray-700"}>{currentAccountInfo.accountAddress}</li>
-                </ul>
-
-                <form action={listButtonClick} className={"flex flex-col align-center ml-15 mt-20"}>
+            <div className={"text-white"}>
+                <OpaqueBox inside={(
                     <div>
-                        <label htmlFor="tokenId">Select Token To Delist: </label>
-                        <select id="tokenId" name="tokenId" className={"border-1 border-solid border-black rounded-sm"}>
-                            {ownedData.map((id: Number, i) => {
-                                return(
-                                    <option key={i} className={""} value={Number(id)}>
-                                        #{String(id)}
-                                    </option>)
-                            })}
-                        </select>            
-                    </div>
+                        <ul className={"flex flex-row ml-15 gap-4 items-center"}>
+                            <li className={"text-xl font-bold"}>Your Public Address: </li>
+                            <li className={"text-xl text-gray-200"}>{currentAccountInfo.accountAddress}</li>
+                        </ul>
 
-                    <div className={"mt-7"}>
-                        <button type="submit" className={"bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
-                            Delist!
-                        </button>
+                        <form action={listButtonClick} className={"flex flex-col align-center ml-15 mt-20"}>
+                            <div>
+                                <label htmlFor="tokenId">Select Token To Delist: </label>
+                                <select id="tokenId" name="tokenId" className={"border-1 border-solid border-white rounded-sm"}>
+                                    {ownedData.map((id: Number, i) => {
+                                        return(
+                                            <option key={i} className={""} value={Number(id)}>
+                                                #{String(id)}
+                                            </option>)
+                                    })}
+                                </select>            
+                            </div>
+
+                            <div className={"mt-7"}>
+                                <button type="submit" className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-white font-bold py-2 px-6 rounded-full"} >
+                                    Delist!
+                                </button>
+                            </div>                     
+                        </form>
                     </div>
-                     
-                </form>
-            </div>
+                )} />
+            </div>            
         )
     }
 

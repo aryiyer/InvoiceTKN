@@ -39,7 +39,7 @@ export default function marketPlace() {
     }
     if (!(currentAccountInfo?.accountType == "minter" || currentAccountInfo?.accountType == "investor" || currentAccountInfo?.accountType == "owner")) {
         const stuff = (
-            <div className = {"flex flex-col mt-7"}>
+            <div className = {"flex flex-col text-white"}>
                 <ListingCard/>
             </div>
         );
