@@ -128,11 +128,32 @@ contract InvoiceTKN2 is ERC721Enumerable{
 
         require(block.timestamp >= tokens[tokenId].maturityDate-24*60*60, "Token cannot be settled more than 24 hours before maturity date!");
         require(msg.sender == tokens[tokenId].minter, "Only the token minter can settle the invoice.");
-        uint256 amount = tokens[tokenId].value*(10000+tokens[tokenId].yield)/10000;
+        uint256 penalty = 0;
+        if (block.timestamp > tokens[tokenId].maturityDate){
+            uint256 diff = block.timestamp-tokens[tokenId].maturityDate;        
+            penalty = (diff/(24*60*60))*50;
+        }
+        
+        uint256 amount = tokens[tokenId].value*(10000+tokens[tokenId].yield+penalty)/10000;
         require(msg.value >= amount, "transaction value is insufficient to settle!");
         (bool success,) = ownerOf(tokenId).call{value: msg.value}("");
         require(success, "Failed to transfer amount");
         setValidity(false, tokenId);
+    }
+
+    function settleAmount(uint256 tokenId) public view returns (uint256){
+        require(contains(tokenId), "settleAmount: Token must exist!");
+        if(tokens[tokenId].valid == false){
+            return 0;
+        }
+        uint256 penalty = 0;
+        if (block.timestamp > tokens[tokenId].maturityDate){
+            uint256 diff = block.timestamp-tokens[tokenId].maturityDate;        
+            penalty = (diff/(24*60*60))*50;
+        }
+        
+        uint256 amount = tokens[tokenId].value*(10000+tokens[tokenId].yield+penalty)/10000;
+        return amount;
     }
 
     function setValidity(bool v, uint256 tokenId) internal {

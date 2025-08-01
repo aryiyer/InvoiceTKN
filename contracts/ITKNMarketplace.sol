@@ -66,20 +66,6 @@ contract ITKNMarketplace {
         numListed --;
     }
 
-    //Buy Item
-    // function buyItem(IERC721 nftAddress, uint256 _tokenId, address _to) external {
-    //     //Assume that buyer has already been checked to have balance for the transaction
-        
-    //     //check that token is listed
-    //     require(listedTokens[_tokenId].listed, "Marketplace buyItem: token is not listed!");
-
-    //     address tokenOwner = nftAddress.ownerOf(_tokenId); 
-    //     require(nftAddress.ownerOf(_tokenId) != _to, "Cannot buy a token that you own.");
-    //     nftAddress.safeTransferFrom(tokenOwner, _to, _tokenId);
-
-    //     delistItem(nftAddress, _tokenId);
-    // }
-
     function buyItemP(IERC721 nftAddress, uint256 _tokenId, address _to) external payable {
         //check that token is listed
         require(listedTokens[_tokenId].listed, "Marketplace buyItem: token is not listed!");
