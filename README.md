@@ -18,3 +18,13 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 
 # InvoiceTKN
+
+Showcase Photos:
+
+![Minting a Token](/public/image/minting.png)
+
+![Marketplace](/public/image/marketplace.png)
+
+![Listing a Token](/public/image/listing txn.png)
+
+![Purchasing a Token](/public/image/purchasing.png)
