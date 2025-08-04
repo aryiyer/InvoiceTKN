@@ -4,7 +4,6 @@ export default function Butt(props: any){ //prop should be an array of pairs, ti
     const butts = [];
     for (let i = 0; i < props.links.length; i++){
         var color = ["hover:text-teal-200", "hover:text-teal-300", "hover:text-teal-400", "hover:text-teal-500", "hover:text-teal-600", "hover:text-teal-700"];
-        console.log(color);
         butts.push(
             <div key={i}>
                 <a href={props.links[i]}>
