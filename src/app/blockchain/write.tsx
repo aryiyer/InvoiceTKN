@@ -35,6 +35,21 @@ export async function mintTkn(name :string, minter: string, to : string, daysAft
 	}
 }
 
+export async function mintTkn2(minter : string, inputData : any) {
+	console.log("Web3: Calling mintTkn2.");
+	const wei = Number(web3MM.utils.toWei(inputData.value, "ether"));
+	inputData.value = wei;
+	console.log("wei val", wei);
+	try {
+		await nftContract.methods.mintToken2(inputData).send({
+			from: minter,
+		});
+		console.log("Minted token.");
+	} catch (error) {
+		console.error(error);
+	}
+}
+
 export async function addUser(address: string, role: string, fromAddy: any) {
 	console.log("Web3: Calling addUser.");
 	try {

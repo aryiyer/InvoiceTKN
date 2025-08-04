@@ -6,6 +6,8 @@ import {MetaMaskSDK} from "@metamask/sdk";
 import { AccountInfo } from "../store/accountStore";
 import { marketplace_abi, marketplaceAddress, nft_abi, nftAddress } from "./nft_abi";
 
+declare var window: any;
+
 const MMSDK = new MetaMaskSDK({
   dappMetadata: {
     name: "Tradeable Invoice TKN",
@@ -14,7 +16,7 @@ const MMSDK = new MetaMaskSDK({
   infuraAPIKey: process.env.SEPOLIA_API,
 });
 
-declare var window: any;
+
 
 const nftContract = new web3.eth.Contract(nft_abi, nftAddress);
 const marketplaceContract = new web3.eth.Contract(marketplace_abi, marketplaceAddress);
@@ -100,18 +102,20 @@ export async function getListed2(){
 			console.log(tokenId);
 			if (tokenId != 0) {
 				let result = await nftContract.methods.getTokenInfo(tokenId).call();
-
-				//logic to convert seconds from epoch to date
-				
 				var data : TokenData2 = {
 					tokenId: Number(result.tokenId),
-					name: String(result.name),
-					value: Number(result.value), //in WEI
 					yield: Number(result.yield),
-					valid: Boolean(result.valid),
-					minter: String(result.minter),
-					maturityDate: Number(result.maturityDate),
 					mintedDate: Number(result.mintedDate),
+					minter: String(result.minter),
+					valid: Boolean(result.valid),
+					name: String(result.name),
+					value: Number(result.value), //in wei
+					customer: String(result.customer),
+					port: String(result.port),
+					vesselName: String(result.vesselName),
+					bunkerQuantity: Number(result.bunkerQuantity),
+					bunkerPrice: Number(result.bunkerPrice),		
+					maturityDate: Number(result.maturityDate),			
 				}
 				if (data.valid){
 					ListedInfo.push(data);
@@ -171,18 +175,35 @@ export async function getTokInfo2(tokenId: Number){
         let result = await nftContract.methods.getTokenInfo(tokenId).call();
 		var data : TokenData2 = {
 			tokenId: Number(result.tokenId),
+			yield: Number(result.yield),
+			mintedDate: Number(result.mintedDate),
+			minter: String(result.minter),
+			valid: Boolean(result.valid),
 			name: String(result.name),
 			value: Number(result.value), //in wei
-			yield: Number(result.yield),
-			valid: Boolean(result.valid),
-			minter: String(result.minter),
-			maturityDate: Number(result.maturityDate),
-			mintedDate: Number(result.mintedDate),
+			customer: String(result.customer),
+			port: String(result.port),
+			vesselName: String(result.vesselName),
+			bunkerQuantity: Number(result.bunkerQuantity),
+			bunkerPrice: Number(result.bunkerPrice),		
+			maturityDate: Number(result.maturityDate),			
 		}
 		return data;
     } catch (error) {
         console.error(error);
 		throw new Error("getTokInfo2 failed")
+    }
+}
+
+export async function getTokInfo3(tokenId: Number){
+	console.log("Web3: Called getTokInfo3");
+	try {
+        let result = await nftContract.methods.getTokenInfo(tokenId).call();
+		
+		return result;
+    } catch (error) {
+        console.error(error);
+		throw new Error("getTokInfo3 failed")
     }
 }
 
