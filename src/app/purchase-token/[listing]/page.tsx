@@ -9,6 +9,7 @@ import {useTokenStore, TokenData2} from "../../store/dataStore";
 import { useAccountStore } from "../../store/accountStore";
 import {useRouter} from "next/navigation";
 import OpaqueBox from '@/components/Box';
+import { usdToEth } from '@/app/blockchain/nft_abi';
 
 declare var window: any;
 
@@ -156,14 +157,14 @@ export default function (){
                     <ul className={"flex flex-row mt-10 gap-4"}>
                         <li className={"text-2xl font-bold"}>Token Final Value:</li>
                         <div>
-                            <li className={"text-3xl"}>{weiToEth(Number(value))} ETH</li>
-                            <li className={"text-xl text-gray-200"}>Invoice Value: {weiToEth((Number(token?.value)))} ETH, Yield: {Number(token?.yield)/100}% (late fees may apply)</li>
+                            <li className={"text-3xl"}>{(weiToEth(Number(value))*usdToEth).toFixed(4)} USD</li>
+                            <li className={"text-xl text-gray-200"}>Invoice Value: {(weiToEth((Number(token?.value)))*usdToEth).toFixed(4)} ETH, Yield: {Number(token?.yield)/100}% (late fees may apply)</li>
                         </div>
                     </ul>
 
                     <ul className={"flex flex-row mt-7 gap-4 items-center"}>
                         <li className={"text-2xl"}>Token Price:</li>
-                        <li className={"text-3xl"}>{weiToEth(Number(listPrice))} ETH</li>
+                        <li className={"text-3xl"}>{(weiToEth(Number(listPrice))*usdToEth).toFixed(4)} USD</li>
                     </ul>
                     
                     <button className={"border-1 border-solid bg-black/30 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-full mt-10"} onClick={purchaseClicked}>
