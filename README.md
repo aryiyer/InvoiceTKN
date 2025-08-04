@@ -35,4 +35,4 @@ Listing a Token
 
 
 Purchasing a Token
-![Purchasing a Token](/public/image/purchasing.png)
+![Purchasing a Token](/public/image/purchasingtxn.png)
