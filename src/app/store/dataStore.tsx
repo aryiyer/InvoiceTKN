@@ -2,13 +2,18 @@ import {create} from 'zustand';
 
 export type TokenData2 = {
     tokenId: number,
+    yield: number,
+    mintedDate: number,
+    minter: string,
+    valid: boolean,
     name: string,
     value: number, //value in WEI!!!
-    yield: number,
-    valid: boolean,
-    minter: string,
-    maturityDate: number,    
-    mintedDate: number,
+    customer: string,
+    port: string,
+    vesselName: string,
+    bunkerQuantity: number,
+    bunkerPrice: number,
+    maturityDate: number,        
 }
 
 
