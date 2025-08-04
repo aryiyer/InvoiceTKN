@@ -5,6 +5,7 @@ import {useTokenStore} from "../store/dataStore";
 import {useEffect, useState} from "react";
 import styles from "./ListingCard.module.css";
 import {getListed2, listingPrice, weiToEth} from "../blockchain/search";
+import { usdToEth } from '../blockchain/nft_abi';
 
 const options = {
   year: "numeric",
@@ -79,9 +80,9 @@ export default function ListingCard() {
                 </div>
                 <ul className={"mt-7"}>
                     <li>Name</li>
-                    <li>Invoice Value</li>                            
+                    <li>Invoice Value (USD)</li>                            
                     <li>Yield</li>
-                    <li>Token Price</li>
+                    <li>Token Price (USD)</li>
                     <li>Maturity Date</li>                            
                     
                 </ul>
@@ -90,10 +91,10 @@ export default function ListingCard() {
 
             {data.map(function(t, i){
                 const IconNameBox = (<div>{t.token.name}</div>);       
-                const ValueBox = (<div>{weiToEth(Number(t.token.value))} ETH</div>);
+                const ValueBox = (<div>{(weiToEth(Number(t.token.value))*usdToEth).toFixed(4)}</div>);
                 const DateBox = (<div>{(new Date(t.token.maturityDate*1000)).toLocaleDateString(undefined, options)}</div>);
                 const YieldBox = (<div>{t.token.yield/100}%</div>);
-                const PriceBox = (<div>{weiToEth(Number(t.tokenPrice))} ETH</div>);
+                const PriceBox = (<div>{(weiToEth(Number(t.tokenPrice))*usdToEth).toFixed(4)}</div>);
                 const url = "/token/" + t.token.tokenId;
                 const MoreInfoBox = (
                 <div>

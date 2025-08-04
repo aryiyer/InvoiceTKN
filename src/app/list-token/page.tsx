@@ -8,6 +8,7 @@ import {listCoin2} from '../blockchain/write';
 import { liveValue } from '../blockchain/search';
 import {useRouter} from "next/navigation";
 import OpaqueBox from '@/components/Box';
+import { usdToEth } from '../blockchain/nft_abi';
 
 export default function (){
     const [loading, setLoading] = useState<Boolean>(false);
@@ -35,7 +36,7 @@ export default function (){
     async function listButtonClick(formData: FormData){
         setLoading(true);
         //Listing takes in ETH and converts to WEI
-        const listRes = await listCoin2(Number(formData.get("tokenId")), Number(ethToWei(Number(formData.get("value")))));
+        const listRes = await listCoin2(Number(formData.get("tokenId")), Number(ethToWei(Number(formData.get("value"))/usdToEth)));
         setLoading(false);
         setSuccess(listRes);
         
@@ -45,7 +46,7 @@ export default function (){
 
     async function handleChange(event : any){
         if (event.target.value != "Select a Token..."){            
-            setRec(await liveValue(Number(event.target.value)));
+            setRec("$"+String(((Number(await liveValue(Number(event.target.value))))*usdToEth).toFixed(4)) + " USD");
         };
     };
 
@@ -145,7 +146,7 @@ export default function (){
                             </div>
 
                             <div className={"mt-7 font-bold"}>   
-                                <label htmlFor="value">Listing Price (ETH):  &nbsp; </label>
+                                <label htmlFor="value">Listing Price (USD):  &nbsp; </label>
                                 <input type="number" id="value" name="value" className={"border-1 border-solid border-white rounded-sm bg-gray-500/30"} step="0.000001"></input>
                             </div>
 
