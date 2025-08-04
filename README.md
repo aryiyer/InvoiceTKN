@@ -21,10 +21,18 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Showcase Photos:
 
+
+Minting a Token:
 ![Minting a Token](/public/image/minting.png)
 
+
+Marketplace
 ![Marketplace](/public/image/marketplace.png)
 
-![Listing a Token](/public/image/listing txn.png)
 
+Listing a Token
+![Listing a Token](/public/image/listingtxn.png)
+
+
+Purchasing a Token
 ![Purchasing a Token](/public/image/purchasing.png)
